@@ -6,11 +6,11 @@
   <meta name="theme-color" content="#0f172a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Treino de Musculação para Luana" />
+  <meta name="apple-mobile-web-app-title" content="Treino da Luana" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="icon.svg" />
-  <title>Treino de Musculação para Luana</title>
+  <title>Treino da Luana</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -153,6 +153,24 @@
       border-radius: 999px;
       display: inline-block;
       margin-bottom: 8px;
+    }
+
+    .pill-status-ready {
+      border-color: var(--accent);
+      background: #123120;
+      color: #dcfce7;
+    }
+
+    .pill-status-pending {
+      border-color: var(--border);
+      background: #0b1220;
+      color: var(--muted);
+    }
+
+    .pill-status-error {
+      border-color: var(--danger);
+      background: #3f0f16;
+      color: #fecaca;
     }
 
     .day-selector {
@@ -311,6 +329,79 @@
       font-weight: 700;
     }
 
+    .inline-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      background: #0b1220;
+    }
+
+    .exercise-link {
+      cursor: pointer;
+      text-decoration: underline;
+      text-decoration-color: var(--border);
+      text-underline-offset: 2px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 8px;
+    }
+
+    .exercise-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .series-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-series {
+      background: var(--accent);
+      color: #052e16;
+      min-width: 120px;
+      min-height: 48px;
+      font-size: 1rem;
+    }
+
+    select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      background: #0b1220;
+      color: var(--text);
+      font-size: 1rem;
+      min-height: 44px;
+    }
+
+    .library-grid {
+      display: grid;
+      gap: 10px;
+      max-height: 380px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .hint-box {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      background: #0b1220;
+    }
+
     @media (max-width: 400px) {
       .row {
         grid-template-columns: 1fr;
@@ -327,8 +418,9 @@
 <body>
   <div class="container">
     <div class="card">
-      <h1>Treino de Musculação para Luana</h1>
+      <h1>Treino da Luana</h1>
       <span class="pill">Salvo no celular automaticamente</span>
+      <span id="offlineStatus" class="pill">Offline: verificando...</span>
       <h2>ABCD - 45 minutos</h2>
 
       <div class="day-selector" id="daySelector" aria-label="Seleção de treino por dia">
@@ -365,7 +457,33 @@
         <button id="startPauseBtn" class="btn-primary">Iniciar</button>
         <button id="resetTimerBtn" class="btn-danger">Resetar</button>
       </div>
+      <div class="actions">
+        <button id="notifyPermissionBtn" class="btn-secondary">Ativar notificações</button>
+        <button id="scheduleReminderBtn" class="btn-secondary">Lembrete em 60 min</button>
+      </div>
+      <div id="activeRestBox" class="hint-box" aria-live="polite">
+        <div class="exercise-name">Descanso ativo</div>
+        <div id="activeRestText" class="muted">Inicie o timer para receber sugestões rápidas de mobilidade e postura.</div>
+      </div>
       <p class="muted">Formato: minutos e segundos.</p>
+    </div>
+
+    <div class="card">
+      <h2>Banco de exercícios</h2>
+      <p class="muted">Toque no nome do exercício para abrir no Google Imagens e ver referências de execução.</p>
+      <div id="exerciseLibrary" class="library-grid"></div>
+    </div>
+
+    <div class="card">
+      <h2>Criar exercício personalizado</h2>
+      <div class="stack">
+        <input id="customExerciseName" type="text" placeholder="Nome do exercício" aria-label="Nome do exercício" />
+        <input id="customExerciseMuscles" type="text" placeholder="Músculos foco (ex: Peito, Tríceps)" aria-label="Músculos foco" />
+        <input id="customExerciseDesc" type="text" placeholder="Descrição curta da execução" aria-label="Descrição da execução" />
+        <input id="customExerciseMedia" type="text" placeholder="URL de vídeo ou GIF" aria-label="URL de vídeo ou GIF" />
+        <button id="addCustomExerciseBtn" class="btn-primary">Adicionar ao treino ativo</button>
+      </div>
+      <p class="muted">Use para incluir exercícios fora das sugestões. Fica salvo no celular.</p>
     </div>
 
     <div class="card">
@@ -403,6 +521,8 @@
     const STORAGE_KEY = 'meuTreinoCargasV2';
     const ACTIVE_DAY_KEY = 'meuTreinoDiaAtivoV1';
     const TRAINING_HISTORY_KEY = 'meuTreinoHistoricoV1';
+    const CUSTOM_EXERCISES_KEY = 'meuTreinoCustomExercisesV1';
+    const SERIES_TRACK_KEY = 'meuTreinoSeriesTrackV1';
 
     const PLANOS = {
       A: {
@@ -477,6 +597,37 @@
       }
     };
 
+    const EXERCISE_LIBRARY = [
+      { id: 'a_agachamento', nome: 'Agachamento Livre ou Smith', musculos: 'Quadríceps, glúteos, core', descricao: 'Pés firmes e coluna neutra; desça até amplitude segura.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Barbell-barbell-squat-side.gif' },
+      { id: 'a_extensora', nome: 'Cadeira Extensora', musculos: 'Quadríceps', descricao: 'Suba controlando e segure 1s no topo da contração.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Machine-leg-extension-side.gif' },
+      { id: 'a_stiff', nome: 'Stiff (halteres ou barra)', musculos: 'Posterior de coxa, glúteos', descricao: 'Quadril para trás, joelhos semi-flexionados e lombar neutra.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Barbell-romanian-deadlift-side.gif' },
+      { id: 'a_flexora', nome: 'Mesa Flexora ou Flexora Vertical', musculos: 'Posterior de coxa', descricao: 'Evite tirar o quadril do banco e controle a volta.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Machine-leg-curl-side.gif' },
+      { id: 'a_legpress', nome: 'Leg Press 45°', musculos: 'Quadríceps, glúteos', descricao: 'Desça até manter lombar estável e empurre sem travar joelhos.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Machine-leg-press-side.gif' },
+      { id: 'b_barra_fixa', nome: 'Barra Fixa ou Graviton', musculos: 'Dorsal, bíceps', descricao: 'Puxe com cotovelos para baixo e evite impulso.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Bodyweight-pullup-side.gif' },
+      { id: 'b_dips', nome: 'Mergulho nas Paralelas (Dips)', musculos: 'Tríceps, peitoral inferior', descricao: 'Tronco levemente inclinado e descida sob controle.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Bodyweight-dips-side.gif' },
+      { id: 'b_remada', nome: 'Remada Curvada', musculos: 'Costas, posterior de ombro', descricao: 'Mantenha o tronco firme e puxe em direção ao abdômen.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Barbell-barbell-row-side.gif' },
+      { id: 'b_triceps_testa', nome: 'Tríceps Testa', musculos: 'Tríceps', descricao: 'Cotovelos fixos e controle da barra/halteres na descida.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Barbell-lying-tricep-extension-side.gif' },
+      { id: 'c_supino_inclinado', nome: 'Supino Inclinado (Halteres)', musculos: 'Peitoral superior, tríceps', descricao: 'Escápulas encaixadas e subida sem bater halteres.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Dumbbells-incline-bench-press-side.gif' },
+      { id: 'c_supino_reto', nome: 'Supino Reto (Barra ou Máquina)', musculos: 'Peitoral, tríceps, ombro anterior', descricao: 'Pés fixos no chão e barra tocando levemente o peito.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Barbell-bench-press-side.gif' },
+      { id: 'c_pec_deck', nome: 'Crucifixo Máquina (Pec Deck)', musculos: 'Peitoral', descricao: 'Aproxime os braços em arco e volte controlando.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Machine-pec-deck-fly-side.gif' },
+      { id: 'c_rosca_direta', nome: 'Rosca Direta (Barra W/Reta)', musculos: 'Bíceps', descricao: 'Cotovelos ao lado do tronco, sem balanço.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Barbell-barbell-curl-side.gif' },
+      { id: 'd_desenvolvimento', nome: 'Desenvolvimento Militar', musculos: 'Ombros, tríceps', descricao: 'Empurre acima da cabeça sem perder estabilidade do core.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Barbell-standing-military-press-side.gif' },
+      { id: 'd_elevacao_lateral', nome: 'Elevação Lateral', musculos: 'Deltoide lateral', descricao: 'Suba até a linha do ombro com cotovelos semi-flexionados.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Dumbbells-dumbbell-lateral-raise-side.gif' },
+      { id: 'd_encolhimento', nome: 'Encolhimento (halteres/barra)', musculos: 'Trapézio', descricao: 'Eleve os ombros para cima e desça controlando.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Dumbbells-dumbbell-shrug-side.gif' },
+      { id: 'b_prancha', nome: 'Prancha Isométrica', musculos: 'Core', descricao: 'Alinhe cabeça, tronco e quadril sem compensar lombar.', media: 'https://media.tenor.com/oqfD8WmKu14AAAAC/plank-fitness.gif' }
+    ];
+
+    const ACTIVE_REST_TIPS = [
+      'Respiração: 4 segundos inspirando pelo nariz e 4 soltando lentamente.',
+      'Postura: retraia as escápulas por 15 segundos e relaxe.',
+      'Alongue peitoral em uma parede por 20 segundos de cada lado.',
+      'Mobilize tornozelos: joelho à frente sem tirar o calcanhar do chão.',
+      'Alongamento de flexor do quadril por 20 segundos de cada lado.',
+      'Ative o core: contraia abdômen por 10 segundos e solte.'
+    ];
+
+    const EXERCISE_LIBRARY_MAP = Object.fromEntries(EXERCISE_LIBRARY.map((exercise) => [exercise.id, exercise]));
+
     const listEl = document.getElementById('exerciseList');
     const daySelectorEl = document.getElementById('daySelector');
     const dayTitleEl = document.getElementById('dayTitle');
@@ -490,6 +641,17 @@
     const setTimerBtn = document.getElementById('setTimerBtn');
     const startPauseBtn = document.getElementById('startPauseBtn');
     const resetTimerBtn = document.getElementById('resetTimerBtn');
+    const notifyPermissionBtn = document.getElementById('notifyPermissionBtn');
+    const scheduleReminderBtn = document.getElementById('scheduleReminderBtn');
+    const activeRestTextEl = document.getElementById('activeRestText');
+
+    const exerciseLibraryEl = document.getElementById('exerciseLibrary');
+
+    const customExerciseNameEl = document.getElementById('customExerciseName');
+    const customExerciseMusclesEl = document.getElementById('customExerciseMuscles');
+    const customExerciseDescEl = document.getElementById('customExerciseDesc');
+    const customExerciseMediaEl = document.getElementById('customExerciseMedia');
+    const addCustomExerciseBtn = document.getElementById('addCustomExerciseBtn');
 
     const calendarMonthLabelEl = document.getElementById('calendarMonthLabel');
     const calendarGridEl = document.getElementById('calendarGrid');
@@ -503,10 +665,13 @@
     const prevYearBtn = document.getElementById('prevYearBtn');
     const currentYearBtn = document.getElementById('currentYearBtn');
     const nextYearBtn = document.getElementById('nextYearBtn');
+    const offlineStatusEl = document.getElementById('offlineStatus');
 
     let cargas = loadCargas();
     let activeDay = loadActiveDay();
     let trainingHistory = loadTrainingHistory();
+    let customExercisesByDay = loadCustomExercises();
+    let seriesTrackByDate = loadSeriesTrack();
 
     const today = new Date();
     let calendarYear = today.getFullYear();
@@ -516,6 +681,7 @@
     let totalSeconds = 90;
     let remainingSeconds = totalSeconds;
     let timerId = null;
+    let reminderTimeoutId = null;
 
     function loadCargas() {
       try {
@@ -564,6 +730,52 @@
 
     function saveTrainingHistory() {
       localStorage.setItem(TRAINING_HISTORY_KEY, JSON.stringify(trainingHistory));
+    }
+
+    function loadCustomExercises() {
+      try {
+        const raw = localStorage.getItem(CUSTOM_EXERCISES_KEY);
+        if (!raw) return { A: [], B: [], C: [], D: [] };
+        const parsed = JSON.parse(raw);
+        const base = { A: [], B: [], C: [], D: [] };
+        Object.keys(base).forEach((day) => {
+          const list = Array.isArray(parsed?.[day]) ? parsed[day] : [];
+          base[day] = list
+            .filter((item) => item && typeof item.id === 'string' && typeof item.nome === 'string')
+            .map((item) => ({
+              id: item.id,
+              nome: item.nome,
+              reps: typeof item.reps === 'string' ? item.reps : '10-12 reps',
+              nota: typeof item.nota === 'string' ? item.nota : '',
+              musculos: typeof item.musculos === 'string' ? item.musculos : '',
+              descricao: typeof item.descricao === 'string' ? item.descricao : '',
+              media: typeof item.media === 'string' ? item.media : ''
+            }));
+        });
+        return base;
+      } catch {
+        return { A: [], B: [], C: [], D: [] };
+      }
+    }
+
+    function saveCustomExercises() {
+      localStorage.setItem(CUSTOM_EXERCISES_KEY, JSON.stringify(customExercisesByDay));
+    }
+
+    function loadSeriesTrack() {
+      try {
+        const raw = localStorage.getItem(SERIES_TRACK_KEY);
+        if (!raw) return {};
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return {};
+        return parsed;
+      } catch {
+        return {};
+      }
+    }
+
+    function saveSeriesTrack() {
+      localStorage.setItem(SERIES_TRACK_KEY, JSON.stringify(seriesTrackByDate));
     }
 
     function toDateKey(date) {
@@ -736,9 +948,195 @@
       retroSummaryEl.appendChild(createRetroItem('Treino mais feito', `${favoriteDay[0]} (${favoriteDay[1]})`));
     }
 
+    function getCombinedExercises(day) {
+      const baseBlocks = PLANOS[day].blocos;
+      const customList = customExercisesByDay[day] || [];
+      if (!customList.length) return baseBlocks;
+
+      return [
+        ...baseBlocks,
+        {
+          titulo: '5) Personalizados',
+          meta: 'Exercícios adicionados por você',
+          exercicios: customList
+        }
+      ];
+    }
+
+    function getExerciseDetails(exercise) {
+      const fromLibrary = EXERCISE_LIBRARY_MAP[exercise.id] || EXERCISE_LIBRARY.find((item) => item.nome === exercise.nome);
+      return {
+        musculos: exercise.musculos || fromLibrary?.musculos || '',
+        descricao: exercise.descricao || fromLibrary?.descricao || exercise.nota || '',
+        media: exercise.media || fromLibrary?.media || ''
+      };
+    }
+
+    function openGoogleImagesSearch(exerciseName) {
+      const query = encodeURIComponent(exerciseName);
+      window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank', 'noopener,noreferrer');
+    }
+
+    function setOfflineStatus(text, state = 'pending') {
+      offlineStatusEl.textContent = text;
+      offlineStatusEl.classList.remove('pill-status-ready', 'pill-status-pending', 'pill-status-error');
+
+      if (state === 'ready') {
+        offlineStatusEl.classList.add('pill-status-ready');
+      } else if (state === 'error') {
+        offlineStatusEl.classList.add('pill-status-error');
+      } else {
+        offlineStatusEl.classList.add('pill-status-pending');
+      }
+    }
+
+    async function requestOfflineStatusFromServiceWorker() {
+      if (!('serviceWorker' in navigator)) {
+        setOfflineStatus('Offline: sem suporte', 'error');
+        return;
+      }
+
+      const controller = navigator.serviceWorker.controller;
+      if (!controller) {
+        setOfflineStatus(navigator.onLine ? 'Offline: preparando...' : 'Offline: indisponível', navigator.onLine ? 'pending' : 'error');
+        return;
+      }
+
+      const channel = new MessageChannel();
+      const timeoutId = setTimeout(() => {
+        setOfflineStatus(navigator.onLine ? 'Offline: verificando...' : 'Offline: sem cache', navigator.onLine ? 'pending' : 'error');
+      }, 1500);
+
+      channel.port1.onmessage = (event) => {
+        clearTimeout(timeoutId);
+        if (event.data?.type === 'CACHE_STATUS') {
+          if (event.data.ready) {
+            setOfflineStatus('Offline: pronto', 'ready');
+          } else {
+            setOfflineStatus(navigator.onLine ? 'Offline: preparando...' : 'Offline: sem cache', navigator.onLine ? 'pending' : 'error');
+          }
+        }
+      };
+
+      controller.postMessage({ type: 'GET_CACHE_STATUS' }, [channel.port2]);
+    }
+
+    function getSeriesCount(exerciseId) {
+      const todayKey = toDateKey(new Date());
+      return Number(seriesTrackByDate?.[todayKey]?.[exerciseId] || 0);
+    }
+
+    function markSeries(exerciseId) {
+      const todayKey = toDateKey(new Date());
+      if (!seriesTrackByDate[todayKey]) {
+        seriesTrackByDate[todayKey] = {};
+      }
+      const current = Number(seriesTrackByDate[todayKey][exerciseId] || 0);
+      seriesTrackByDate[todayKey][exerciseId] = current + 1;
+      saveSeriesTrack();
+      renderExercises();
+    }
+
+    function buildCustomExerciseFromInput() {
+      const nome = customExerciseNameEl.value.trim();
+      const musculos = customExerciseMusclesEl.value.trim();
+      const descricao = customExerciseDescEl.value.trim();
+      const media = customExerciseMediaEl.value.trim();
+
+      if (!nome) return null;
+
+      return {
+        id: `custom_${Date.now()}`,
+        nome,
+        reps: '10-12 reps',
+        nota: '',
+        musculos,
+        descricao,
+        media
+      };
+    }
+
+    function addExerciseToActiveDay(exercise) {
+      const day = activeDay;
+      customExercisesByDay[day].push(exercise);
+      saveCustomExercises();
+      renderExercises();
+    }
+
+    function renderExerciseLibrary() {
+      exerciseLibraryEl.innerHTML = '';
+
+      EXERCISE_LIBRARY.forEach((exercise) => {
+        const card = document.createElement('div');
+        card.className = 'block';
+
+        const name = document.createElement('div');
+        name.className = 'exercise-name';
+        name.textContent = exercise.nome;
+        name.classList.add('exercise-link');
+        name.title = 'Abrir no Google Imagens';
+        name.addEventListener('click', () => openGoogleImagesSearch(exercise.nome));
+
+        const muscles = document.createElement('div');
+        muscles.className = 'inline-chip';
+        muscles.textContent = exercise.musculos;
+
+        const description = document.createElement('div');
+        description.className = 'exercise-meta';
+        description.textContent = exercise.descricao;
+
+        const actions = document.createElement('div');
+        actions.className = 'exercise-actions';
+
+        const addButton = document.createElement('button');
+        addButton.type = 'button';
+        addButton.className = 'btn-secondary';
+        addButton.textContent = `Adicionar ao treino ${activeDay}`;
+        addButton.addEventListener('click', () => {
+          addExerciseToActiveDay({
+            id: `custom_${exercise.id}_${Date.now()}`,
+            nome: exercise.nome,
+            reps: '10-12 reps',
+            nota: '',
+            musculos: exercise.musculos,
+            descricao: exercise.descricao,
+            media: exercise.media
+          });
+        });
+
+        actions.appendChild(addButton);
+        card.append(name, muscles, description, actions);
+        exerciseLibraryEl.appendChild(card);
+      });
+    }
+
+    function setActiveRestTip(randomize = true) {
+      const tip = randomize
+        ? ACTIVE_REST_TIPS[Math.floor(Math.random() * ACTIVE_REST_TIPS.length)]
+        : ACTIVE_REST_TIPS[0];
+      activeRestTextEl.textContent = tip;
+    }
+
+    async function requestNotificationPermission() {
+      if (!('Notification' in window)) return 'unsupported';
+      if (Notification.permission === 'granted') return 'granted';
+      const result = await Notification.requestPermission();
+      return result;
+    }
+
+    function notifySmart(title, body) {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, { body, icon: './icon.svg', badge: './icon.svg' });
+      }
+      if ('vibrate' in navigator) {
+        navigator.vibrate([220, 120, 220]);
+      }
+    }
+
     function renderExercises() {
       listEl.innerHTML = '';
       const plano = PLANOS[activeDay];
+      const blocks = getCombinedExercises(activeDay);
 
       dayTitleEl.textContent = plano.titulo;
       dayFocusEl.textContent = plano.foco;
@@ -750,7 +1148,7 @@
         btn.setAttribute('aria-pressed', String(isActive));
       });
 
-      plano.blocos.forEach((bloco) => {
+      blocks.forEach((bloco) => {
         const blocoEl = document.createElement('div');
         blocoEl.className = 'block';
 
@@ -766,6 +1164,7 @@
         blocoEl.appendChild(metaEl);
 
         bloco.exercicios.forEach((exercise) => {
+          const details = getExerciseDetails(exercise);
           const row = document.createElement('div');
           row.className = 'row';
 
@@ -773,12 +1172,36 @@
           const name = document.createElement('div');
           name.className = 'exercise-name';
           name.textContent = exercise.nome;
+          name.classList.add('exercise-link');
+          name.title = 'Abrir no Google Imagens';
+          name.addEventListener('click', () => openGoogleImagesSearch(exercise.nome));
 
           const meta = document.createElement('div');
           meta.className = 'exercise-meta';
-          meta.textContent = `${exercise.reps}${exercise.nota ? ` • ${exercise.nota}` : ''}`;
+          const descriptionText = details.descricao || exercise.nota;
+          meta.textContent = `${exercise.reps}${descriptionText ? ` • ${descriptionText}` : ''}`;
 
-          left.append(name, meta);
+          const muscles = document.createElement('div');
+          muscles.className = 'inline-chip';
+          muscles.textContent = details.musculos || 'Músculos gerais';
+
+          const seriesRow = document.createElement('div');
+          seriesRow.className = 'series-row';
+
+          const seriesBadge = document.createElement('span');
+          seriesBadge.className = 'muted';
+          seriesBadge.textContent = `Séries hoje: ${getSeriesCount(exercise.id)}`;
+
+          const seriesButton = document.createElement('button');
+          seriesButton.type = 'button';
+          seriesButton.className = 'btn-series';
+          seriesButton.textContent = '+ Marcar série';
+          seriesButton.setAttribute('aria-label', `Marcar uma série em ${exercise.nome}`);
+          seriesButton.addEventListener('click', () => markSeries(exercise.id));
+
+          seriesRow.append(seriesButton, seriesBadge);
+
+          left.append(name, muscles, meta, seriesRow);
 
           const right = document.createElement('div');
           right.className = 'exercise-weight';
@@ -811,8 +1234,8 @@
     }
 
     function resetCurrentDayLoads() {
-      const plano = PLANOS[activeDay];
-      plano.blocos.forEach((bloco) => {
+      const blocos = getCombinedExercises(activeDay);
+      blocos.forEach((bloco) => {
         bloco.exercicios.forEach((exercise) => {
           cargas[exercise.id] = 0;
         });
@@ -833,6 +1256,7 @@
       activeDay = button.dataset.day;
       saveActiveDay();
       renderExercises();
+      renderExerciseLibrary();
     });
 
     resetDayBtn.addEventListener('click', () => {
@@ -845,6 +1269,20 @@
       if (confirm('Resetar todas as cargas de todos os treinos?')) {
         resetAllLoads();
       }
+    });
+
+    addCustomExerciseBtn.addEventListener('click', () => {
+      const customExercise = buildCustomExerciseFromInput();
+      if (!customExercise) {
+        customExerciseNameEl.focus();
+        return;
+      }
+
+      addExerciseToActiveDay(customExercise);
+      customExerciseNameEl.value = '';
+      customExerciseMusclesEl.value = '';
+      customExerciseDescEl.value = '';
+      customExerciseMediaEl.value = '';
     });
 
     function formatTime(seconds) {
@@ -867,16 +1305,18 @@
 
     function startTimer() {
       if (remainingSeconds <= 0) return;
+      setActiveRestTip(true);
       timerId = setInterval(() => {
         remainingSeconds -= 1;
         updateTimerDisplay();
 
+        if (remainingSeconds > 0 && remainingSeconds % 20 === 0) {
+          setActiveRestTip(true);
+        }
+
         if (remainingSeconds <= 0) {
           stopTimer();
-          if ('vibrate' in navigator) {
-            navigator.vibrate([250, 150, 250]);
-          }
-          alert('Tempo finalizado!');
+          notifySmart('Descanso finalizado', 'Hora da próxima série.');
         }
       }, 1000);
       startPauseBtn.textContent = 'Pausar';
@@ -915,6 +1355,33 @@
       remainingSeconds = totalSeconds;
       stopTimer();
       updateTimerDisplay();
+      setActiveRestTip(false);
+    });
+
+    notifyPermissionBtn.addEventListener('click', async () => {
+      const permission = await requestNotificationPermission();
+      if (permission === 'granted') {
+        notifyPermissionBtn.textContent = 'Notificações ativadas';
+        notifySmart('Notificações ativas', 'Você receberá alertas do timer e lembretes.');
+      } else if (permission === 'denied') {
+        notifyPermissionBtn.textContent = 'Notificações bloqueadas';
+      } else if (permission === 'unsupported') {
+        notifyPermissionBtn.textContent = 'Sem suporte no navegador';
+      }
+    });
+
+    scheduleReminderBtn.addEventListener('click', async () => {
+      if (reminderTimeoutId) {
+        clearTimeout(reminderTimeoutId);
+      }
+
+      await requestNotificationPermission();
+
+      reminderTimeoutId = setTimeout(() => {
+        notifySmart('Lembrete de treino', 'Hora de treinar. Se já treinou, ótimo trabalho 💪');
+      }, 60 * 60 * 1000);
+
+      scheduleReminderBtn.textContent = 'Lembrete agendado';
     });
 
     calendarGridEl.addEventListener('click', (event) => {
@@ -968,14 +1435,31 @@
     });
 
     renderExercises();
+    renderExerciseLibrary();
+    setActiveRestTip(false);
     updateTimerDisplay();
     renderCalendar();
     renderRetrospective();
 
+    window.addEventListener('online', () => {
+      requestOfflineStatusFromServiceWorker();
+    });
+
+    window.addEventListener('offline', () => {
+      requestOfflineStatusFromServiceWorker();
+    });
+
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js');
+        navigator.serviceWorker.register('./sw.js').then(() => {
+          requestOfflineStatusFromServiceWorker();
+        });
       });
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        requestOfflineStatusFromServiceWorker();
+      });
+    } else {
+      setOfflineStatus('Offline: sem suporte', 'error');
     }
   </script>
 </body>

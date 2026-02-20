@@ -1,6 +1,6 @@
 {
-  "name": "Treino de Musculação para Luana",
-  "short_name": "Treino Luana",
+  "name": "Treino da Luana",
+  "short_name": "Luana",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

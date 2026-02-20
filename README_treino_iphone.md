@@ -30,3 +30,14 @@ Pronto: vai abrir como app, em tela cheia.
 2. Feche o app da Tela de Início e abra novamente com internet.
 3. Se ainda aparecer versão antiga, no Safari abra o link web uma vez e recarregue.
 4. Em último caso: iPhone > Ajustes > Safari > Avançado > Dados dos Sites > remova o site e instale de novo na Tela de Início.
+
+## 5) Recursos novos no app
+- **Banco de exercícios com referência visual rápida**: toque no nome do exercício para abrir o Google Imagens com aquele termo.
+- **Marcação rápida de série**: botão grande `+ Marcar série` em cada exercício para uso rápido durante o treino.
+- **Treino personalizado**: formulário para adicionar exercícios próprios ao treino ativo (A/B/C/D), salvo no celular.
+- **Notificações inteligentes**: botão `Ativar notificações` + `Lembrete em 60 min` e alerta ao fim do timer de descanso.
+- **Descanso ativo**: durante o timer aparecem dicas curtas de alongamento/correção postural.
+
+## 6) Observações do modo offline
+- O app continua funcionando como PWA com cache dos arquivos principais.
+- A busca no Google Imagens depende de internet no momento do clique.

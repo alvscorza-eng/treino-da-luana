@@ -38,7 +38,6 @@ self.addEventListener('activate', (event) => {
 
 async function networkFirstForNavigation(request) {
   const runtimeCache = await caches.open(RUNTIME_CACHE);
-  const requestUrl = new URL(request.url);
 
   try {
     const networkResponse = await fetch(request);
@@ -51,16 +50,8 @@ async function networkFirstForNavigation(request) {
     if (cachedPage) return cachedPage;
 
     const appShellCache = await caches.open(ASSET_CACHE);
-    const preferredFallback = requestUrl.pathname.endsWith('/treino.html') ? './treino.html' : './index.html';
-
-    const fallbackPreferred = await appShellCache.match(preferredFallback);
-    if (fallbackPreferred) return fallbackPreferred;
-
-    const fallbackIndex = await appShellCache.match('./index.html');
-    if (fallbackIndex) return fallbackIndex;
-
-    const fallbackTreino = await appShellCache.match('./treino.html');
-    if (fallbackTreino) return fallbackTreino;
+    const fallback = await appShellCache.match('./index.html');
+    if (fallback) return fallback;
 
     return Response.error();
   }
@@ -94,13 +85,20 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
 
-  const requestUrl = new URL(request.url);
-  if (requestUrl.origin !== self.location.origin) return;
-
   if (request.mode === 'navigate') {
     event.respondWith(networkFirstForNavigation(request));
     return;
   }
 
   event.respondWith(staleWhileRevalidate(request, event));
+});
+
+self.addEventListener('message', async (event) => {
+  if (event.data?.type !== 'GET_CACHE_STATUS') return;
+
+  const hasAssetCache = (await caches.keys()).includes(ASSET_CACHE);
+  event.ports[0]?.postMessage({
+    type: 'CACHE_STATUS',
+    ready: hasAssetCache
+  });
 });
