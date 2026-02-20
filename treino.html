@@ -280,71 +280,71 @@
 
     const PLANOS = {
       A: {
-        titulo: 'Treino A: Superiores (Costas, Bíceps e Ombro)',
-        foco: 'Foco na postura e em desenhar o "V" das costas, o que afina visualmente a cintura.',
+        titulo: 'Treino A: Superiores (Costas e Bíceps)',
+        foco: '',
         blocos: [
           {
             titulo: 'Série principal',
-            meta: '3 séries por exercício',
+            meta: '',
             exercicios: [
-              { id: 'a_puxada_alta', nome: 'Puxada Alta (Pulley Frente)', reps: '12-15', nota: '' },
-              { id: 'a_remada_baixa', nome: 'Remada Baixa com triângulo', reps: '12-15', nota: '' },
-              { id: 'a_elevacao_lateral', nome: 'Elevação Lateral (Halteres)', reps: '15', nota: '' },
-              { id: 'a_desenvolvimento_ombros', nome: 'Desenvolvimento de ombros (Halteres)', reps: '12', nota: '' },
-              { id: 'a_rosca_direta', nome: 'Rosca Direta (Polia ou Halter)', reps: '15', nota: '' },
-              { id: 'a_abdominal_infra', nome: 'Abdominal Infra (Elevação de pernas)', reps: '20', nota: '' }
+              { id: 'a_puxada_alta', nome: 'Puxada Alta (Pulley)', reps: '3 x 12 a 15 rep.', nota: '' },
+              { id: 'a_remada_baixa', nome: 'Remada Baixa (Triângulo)', reps: '3 x 12 a 15 rep.', nota: '' },
+              { id: 'a_elevacao_lateral', nome: 'Elevação Lateral (Ombros)', reps: '3 x 15 rep.', nota: '' },
+              { id: 'a_desenvolvimento_ombros', nome: 'Desenvolvimento (Halteres)', reps: '3 x 12 rep.', nota: '' },
+              { id: 'a_rosca_direta', nome: 'Rosca Direta (Polia ou Halter)', reps: '3 x 15 rep.', nota: '' },
+              { id: 'a_abdominal_infra', nome: 'Abdominal Infra (Elevação de pernas)', reps: '3 x 20 rep.', nota: '' }
             ]
           }
         ]
       },
       B: {
-        titulo: 'Treino B: Inferiores (Foco Quadríceps)',
-        foco: 'Pernas firmes e definidas.',
+        titulo: 'Treino B: Inferiores (Quadríceps)',
+        foco: '',
         blocos: [
           {
             titulo: 'Série principal',
-            meta: 'Conforme tabela do treino',
+            meta: '',
             exercicios: [
-              { id: 'b_agachamento', nome: 'Agachamento Livre ou no Smith', reps: '4 séries • 10-12', nota: '' },
-              { id: 'b_legpress', nome: 'Leg Press 45°', reps: '3 séries • 12-15', nota: '' },
-              { id: 'b_extensora', nome: 'Cadeira Extensora', reps: '3 séries • 12 + 10s isometria', nota: '' },
-              { id: 'b_afundo_estatico', nome: 'Afundo (Passada) estático', reps: '3 séries • 12 por perna', nota: '' },
-              { id: 'b_panturrilha_sentada', nome: 'Panturrilha sentada', reps: '4 séries • 15-20', nota: '' }
+              { id: 'b_agachamento', nome: 'Agachamento Livre ou Smith', reps: '4 x 10 a 12 rep.', nota: '' },
+              { id: 'b_legpress', nome: 'Leg Press 45°', reps: '3 x 12 a 15 rep.', nota: '' },
+              { id: 'b_extensora', nome: 'Cadeira Extensora', reps: '3 x 12 rep.', nota: '(+10s de isometria no final da última série).' },
+              { id: 'b_afundo_estatico', nome: 'Afundo (Passada Estática)', reps: '3 x 12 rep.', nota: '(cada perna).' },
+              { id: 'b_panturrilha_sentada', nome: 'Panturrilha Sentada', reps: '4 x 15 a 20 rep.', nota: '' }
             ]
           }
         ]
       },
       C: {
-        titulo: 'Treino C: Superiores (Peito, Tríceps e Abdômen)',
-        foco: 'Foco em eliminar a gordurinha do "tchau" e do sutiã.',
+        titulo: 'Treino C: Superiores (Peito e Tríceps)',
+        foco: '',
         blocos: [
           {
             titulo: 'Série principal',
-            meta: '3 séries por exercício',
+            meta: '',
             exercicios: [
-              { id: 'c_supino_reto_halteres', nome: 'Supino Reto com Halteres', reps: '12', nota: '' },
-              { id: 'c_crucifixo_inclinado', nome: 'Crucifixo Inclinado', reps: '15', nota: '' },
-              { id: 'c_triceps_corda', nome: 'Tríceps Corda (Polia)', reps: '15', nota: '' },
-              { id: 'c_triceps_frances', nome: 'Tríceps Francês (Halter)', reps: '12', nota: '' },
-              { id: 'c_prancha', nome: 'Prancha Abdominal', reps: 'Manter 45-60s', nota: '' },
-              { id: 'c_abdominal_supra', nome: 'Abdominal Supra (Remador)', reps: '20', nota: '' }
+              { id: 'c_supino_reto_halteres', nome: 'Supino Reto (Halteres)', reps: '3 x 12 rep.', nota: '' },
+              { id: 'c_crucifixo_inclinado', nome: 'Crucifixo Inclinado', reps: '3 x 15 rep.', nota: '' },
+              { id: 'c_triceps_corda', nome: 'Tríceps Corda (Polia)', reps: '3 x 15 rep.', nota: '' },
+              { id: 'c_triceps_frances', nome: 'Tríceps Francês (Halter)', reps: '3 x 12 rep.', nota: '' },
+              { id: 'c_abdominal_supra', nome: 'Abdominal Supra (Remador)', reps: '3 x 20 rep.', nota: '' },
+              { id: 'c_prancha', nome: 'Prancha Abdominal', reps: '3 x 45 a 60 segundos.', nota: '' }
             ]
           }
         ]
       },
       D: {
-        titulo: 'Treino D: Inferiores (Foco Glúteo e Posterior)',
-        foco: 'Para o efeito "slim" com curvas nos lugares certos.',
+        titulo: 'Treino D: Inferiores (Glúteo e Posterior)',
+        foco: '',
         blocos: [
           {
             titulo: 'Série principal',
-            meta: 'Conforme tabela do treino',
+            meta: '',
             exercicios: [
-              { id: 'd_elevacao_pelvica', nome: 'Elevação Pélvica (Barra ou Máquina)', reps: '4 séries • 10-12', nota: '' },
-              { id: 'd_stiff', nome: 'Stiff (Halteres ou Barra)', reps: '3 séries • 12', nota: '' },
-              { id: 'd_cadeira_flexora', nome: 'Cadeira Flexora', reps: '3 séries • 12-15', nota: '' },
-              { id: 'd_cadeira_abdutora', nome: 'Cadeira Abdutora', reps: '3 séries • 20', nota: 'foco em tronco à frente' },
-              { id: 'd_gluteo_cabo', nome: 'Glúteo Cabo (Caneleira na polia)', reps: '3 séries • 12 por perna', nota: '' }
+              { id: 'd_elevacao_pelvica', nome: 'Elevação Pélvica', reps: '4 x 10 a 12 rep.', nota: '' },
+              { id: 'd_stiff', nome: 'Stiff (Barra ou Halteres)', reps: '3 x 12 rep.', nota: '' },
+              { id: 'd_cadeira_flexora', nome: 'Cadeira Flexora', reps: '3 x 12 a 15 rep.', nota: '' },
+              { id: 'd_cadeira_abdutora', nome: 'Cadeira Abdutora', reps: '3 x 20 rep.', nota: '(tronco inclinado à frente).' },
+              { id: 'd_gluteo_cabo', nome: 'Glúteo no Cabo (Polia)', reps: '3 x 12 rep.', nota: '(cada perna).' }
             ]
           }
         ]

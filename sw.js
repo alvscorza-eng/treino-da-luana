@@ -1,11 +1,13 @@
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const ASSET_CACHE = `meu-treino-assets-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `meu-treino-runtime-${CACHE_VERSION}`;
 const APP_SHELL = [
   './',
+  './index.html',
   './treino.html',
   './manifest.webmanifest',
-  './icon.svg'
+  './icon.svg',
+  './sw.js'
 ];
 
 function isCacheableResponse(response) {
@@ -36,6 +38,7 @@ self.addEventListener('activate', (event) => {
 
 async function networkFirstForNavigation(request) {
   const runtimeCache = await caches.open(RUNTIME_CACHE);
+  const requestUrl = new URL(request.url);
 
   try {
     const networkResponse = await fetch(request);
@@ -48,8 +51,16 @@ async function networkFirstForNavigation(request) {
     if (cachedPage) return cachedPage;
 
     const appShellCache = await caches.open(ASSET_CACHE);
-    const fallback = await appShellCache.match('./treino.html');
-    if (fallback) return fallback;
+    const preferredFallback = requestUrl.pathname.endsWith('/treino.html') ? './treino.html' : './index.html';
+
+    const fallbackPreferred = await appShellCache.match(preferredFallback);
+    if (fallbackPreferred) return fallbackPreferred;
+
+    const fallbackIndex = await appShellCache.match('./index.html');
+    if (fallbackIndex) return fallbackIndex;
+
+    const fallbackTreino = await appShellCache.match('./treino.html');
+    if (fallbackTreino) return fallbackTreino;
 
     return Response.error();
   }
