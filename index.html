@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f172a" />
+  <meta id="themeColorMeta" name="theme-color" content="#0f172a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Treino da Luana" />
+  <meta name="apple-mobile-web-app-title" content="Meu Treino" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="icon.svg" />
-  <title>Treino da Luana</title>
+  <title>Meu Treino</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -20,6 +20,24 @@
       --accent: #22c55e;
       --danger: #ef4444;
       --border: #334155;
+      --surface: #0b1220;
+      --focus: #60a5fa;
+      --btn-secondary-bg: #334155;
+      --btn-secondary-text: #f8fafc;
+    }
+
+    body[data-theme="light"] {
+      --bg: #e2e8f0;
+      --card: #f8fafc;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #16a34a;
+      --danger: #dc2626;
+      --border: #cbd5e1;
+      --surface: #ffffff;
+      --focus: #2563eb;
+      --btn-secondary-bg: #e2e8f0;
+      --btn-secondary-text: #0f172a;
     }
 
     * { box-sizing: border-box; }
@@ -36,6 +54,7 @@
       padding-left: max(16px, env(safe-area-inset-left));
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .container {
@@ -85,9 +104,9 @@
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 10px;
-      background: #0b1220;
+      background: var(--surface);
       color: var(--text);
-      font-size: 1rem;
+      font-size: 16px;
       min-height: 44px;
       -webkit-appearance: none;
       appearance: none;
@@ -100,7 +119,7 @@
       font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
-      min-height: 44px;
+      min-height: 48px;
       touch-action: manipulation;
     }
 
@@ -111,7 +130,7 @@
     }
 
     .btn-primary { background: var(--accent); color: #052e16; }
-    .btn-secondary { background: #334155; color: var(--text); }
+    .btn-secondary { background: var(--btn-secondary-bg); color: var(--btn-secondary-text); }
     .btn-danger { background: var(--danger); color: #fff; }
 
     .actions {
@@ -145,7 +164,7 @@
     }
 
     .pill {
-      background: #0b1220;
+      background: var(--surface);
       border: 1px solid var(--border);
       color: var(--muted);
       font-size: 0.8rem;
@@ -163,7 +182,7 @@
 
     .pill-status-pending {
       border-color: var(--border);
-      background: #0b1220;
+      background: var(--surface);
       color: var(--muted);
     }
 
@@ -181,8 +200,8 @@
     }
 
     .day-btn {
-      background: #334155;
-      color: var(--text);
+      background: var(--btn-secondary-bg);
+      color: var(--btn-secondary-text);
       border: 1px solid var(--border);
     }
 
@@ -197,7 +216,7 @@
       border-radius: 12px;
       padding: 10px;
       margin-bottom: 10px;
-      background: #0b1220;
+      background: var(--surface);
     }
 
     .block-title {
@@ -270,7 +289,7 @@
       border: 1px solid var(--border);
       border-radius: 10px;
       min-height: 46px;
-      background: #0b1220;
+      background: var(--surface);
       color: var(--text);
       font-weight: 600;
       display: grid;
@@ -292,8 +311,15 @@
     }
 
     .calendar-day.today {
-      outline: 2px solid #60a5fa;
+      outline: 2px solid var(--focus);
       outline-offset: 1px;
+    }
+
+    body[data-theme="light"] .calendar-day.trained,
+    body[data-theme="light"] .exercise-current,
+    body[data-theme="light"] .pill-status-ready {
+      background: #dcfce7;
+      color: #166534;
     }
 
     .calendar-tag {
@@ -314,7 +340,7 @@
     .retro-item {
       border: 1px solid var(--border);
       border-radius: 10px;
-      background: #0b1220;
+      background: var(--surface);
       padding: 10px;
     }
 
@@ -338,7 +364,7 @@
       padding: 4px 10px;
       font-size: 0.75rem;
       color: var(--muted);
-      background: #0b1220;
+      background: var(--surface);
     }
 
     .exercise-link {
@@ -381,9 +407,9 @@
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 10px;
-      background: #0b1220;
+      background: var(--surface);
       color: var(--text);
-      font-size: 1rem;
+      font-size: 16px;
       min-height: 44px;
     }
 
@@ -399,7 +425,114 @@
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 10px;
-      background: #0b1220;
+      background: var(--surface);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #0f172a;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.2s ease;
+    }
+
+    .workout-status {
+      margin-bottom: 12px;
+    }
+
+    .session-status {
+      margin: 8px 0;
+    }
+
+    .exercise-current {
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 8px;
+      background: #123120;
+    }
+
+    .pr-meta {
+      margin-top: 4px;
+    }
+
+    .backup-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 6px 0 10px;
+    }
+
+    .coach-box {
+      margin-top: 8px;
+    }
+
+    .week-grid {
+      display: grid;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .week-row {
+      display: grid;
+      grid-template-columns: 52px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px;
+      background: var(--surface);
+    }
+
+    .week-day {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+    }
+
+    .library-toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .library-toolbar input {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .btn-favorite {
+      background: var(--btn-secondary-bg);
+      color: var(--btn-secondary-text);
+      border: 1px solid var(--border);
+      min-width: 44px;
+    }
+
+    @media (pointer: coarse) {
+      .actions,
+      .section-actions,
+      .exercise-actions,
+      .series-row,
+      .top-actions {
+        gap: 10px;
+      }
     }
 
     @media (max-width: 400px) {
@@ -418,9 +551,13 @@
 <body>
   <div class="container">
     <div class="card">
-      <h1>Treino da Luana</h1>
+      <h1>Meu Treino</h1>
       <span class="pill">Salvo no celular automaticamente</span>
       <span id="offlineStatus" class="pill">Offline: verificando...</span>
+      <div class="top-actions">
+        <button id="themeToggleBtn" class="btn-secondary" type="button">Tema: Escuro</button>
+        <button id="shareWorkoutBtn" class="btn-secondary" type="button">Compartilhar resultado</button>
+      </div>
       <h2>ABCD - 45 minutos</h2>
 
       <div class="day-selector" id="daySelector" aria-label="Seleção de treino por dia">
@@ -432,11 +569,25 @@
 
       <p id="dayTitle" class="exercise-name"></p>
       <p id="dayFocus" class="muted"></p>
+      <div id="workoutStatus" class="hint-box workout-status" aria-live="polite">
+        <div id="workoutProgressText" class="exercise-name">Progresso: 0 / 0 séries</div>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do treino">
+          <div id="workoutProgressFill" class="progress-fill"></div>
+        </div>
+        <div id="nextWorkoutHint" class="muted">Próximo treino sugerido: A</div>
+        <div id="sessionStatus" class="muted session-status">Sessão: inativa</div>
+        <div id="smartNudge" class="muted">Consistência em dia. Continue no ritmo 💪</div>
+        <div id="coachQuickBox" class="hint-box coach-box">
+          <div class="exercise-name">Coach rápido</div>
+          <div id="coachQuickText" class="muted">Foco do dia e dica prática para melhorar sua execução.</div>
+        </div>
+        <button id="toggleSessionBtn" class="btn-primary" type="button">Iniciar treino</button>
+      </div>
       <div id="exerciseList"></div>
 
       <div class="section-actions">
-        <button id="resetDayBtn" class="btn-secondary">Resetar cargas do treino</button>
-        <button id="resetAllBtn" class="btn-danger">Resetar todas as cargas</button>
+        <button id="resetDayBtn" class="btn-secondary">Zerar cargas do treino</button>
+        <button id="resetAllBtn" class="btn-danger">Zerar todas as cargas</button>
       </div>
       <p class="muted">Edite os pesos em cada exercício. Salvamento automático.</p>
     </div>
@@ -455,11 +606,11 @@
       <div class="actions">
         <button id="setTimerBtn" class="btn-secondary">Definir tempo</button>
         <button id="startPauseBtn" class="btn-primary">Iniciar</button>
-        <button id="resetTimerBtn" class="btn-danger">Resetar</button>
+        <button id="resetTimerBtn" class="btn-danger">Reiniciar</button>
       </div>
       <div class="actions">
         <button id="notifyPermissionBtn" class="btn-secondary">Ativar notificações</button>
-        <button id="scheduleReminderBtn" class="btn-secondary">Lembrete em 60 min</button>
+        <button id="scheduleReminderBtn" class="btn-secondary">Lembrete em 1h</button>
       </div>
       <div id="activeRestBox" class="hint-box" aria-live="polite">
         <div class="exercise-name">Descanso ativo</div>
@@ -471,7 +622,17 @@
     <div class="card">
       <h2>Banco de exercícios</h2>
       <p class="muted">Toque no nome do exercício para abrir no Google Imagens e ver referências de execução.</p>
+      <div class="library-toolbar">
+        <input id="libraryFilterInput" type="text" placeholder="Filtrar exercício ou músculo" aria-label="Filtrar biblioteca" />
+        <button id="toggleFavoritesOnlyBtn" class="btn-secondary" type="button">Ver só favoritos</button>
+      </div>
       <div id="exerciseLibrary" class="library-grid"></div>
+    </div>
+
+    <div class="card">
+      <h2>Planejamento semanal</h2>
+      <div id="weekPlanGrid" class="week-grid"></div>
+      <p id="weekPlanHint" class="muted">Sugestão semanal baseada no último treino registrado.</p>
     </div>
 
     <div class="card">
@@ -498,7 +659,7 @@
       </div>
       <div id="calendarGrid" class="calendar-grid" role="grid" aria-label="Calendário de treino"></div>
       <div class="actions">
-        <button id="markTodayBtn" class="btn-primary">Marcar treino de hoje</button>
+        <button id="markTodayBtn" class="btn-primary">Concluir treino de hoje</button>
       </div>
       <p class="muted">Toque em um dia para marcar/desmarcar. Salvo automaticamente.</p>
     </div>
@@ -515,6 +676,16 @@
       </div>
       <div id="retroSummary" class="retro-grid"></div>
     </div>
+
+    <div class="card">
+      <h2>Backup e restauração</h2>
+      <div class="backup-actions">
+        <button id="exportDataBtn" class="btn-secondary">Exportar JSON</button>
+        <button id="importDataBtn" class="btn-secondary">Importar JSON</button>
+        <input id="importFileInput" type="file" accept="application/json,.json" class="sr-only" aria-label="Selecionar arquivo de backup JSON" />
+      </div>
+      <p id="backupStatus" class="muted">Exporte para salvar uma cópia e importe quando precisar restaurar.</p>
+    </div>
   </div>
 
   <script>
@@ -523,20 +694,24 @@
     const TRAINING_HISTORY_KEY = 'meuTreinoHistoricoV1';
     const CUSTOM_EXERCISES_KEY = 'meuTreinoCustomExercisesV1';
     const SERIES_TRACK_KEY = 'meuTreinoSeriesTrackV1';
+    const WORKOUT_SET_LOG_KEY = 'meuTreinoSetLogV1';
+    const INACTIVITY_ALERT_KEY = 'meuTreinoInactivityAlertV1';
+    const FAVORITES_KEY = 'meuTreinoFavoritesV1';
+    const THEME_KEY = 'meuTreinoThemeV1';
 
     const PLANOS = {
       A: {
         titulo: 'Treino A: Superiores (Costas e Bíceps)',
-        foco: '',
+        foco: 'Costas, ombros, bíceps e core.',
         blocos: [
           {
-            titulo: 'Série principal',
+            titulo: '1) Sequência principal',
             meta: '',
             exercicios: [
               { id: 'a_puxada_alta', nome: 'Puxada Alta (Pulley)', reps: '3 x 12 a 15 rep.', nota: '' },
               { id: 'a_remada_baixa', nome: 'Remada Baixa (Triângulo)', reps: '3 x 12 a 15 rep.', nota: '' },
               { id: 'a_elevacao_lateral', nome: 'Elevação Lateral (Ombros)', reps: '3 x 15 rep.', nota: '' },
-              { id: 'a_desenvolvimento_ombros', nome: 'Desenvolvimento (Halteres)', reps: '3 x 12 rep.', nota: '' },
+              { id: 'a_desenvolvimento', nome: 'Desenvolvimento (Halteres)', reps: '3 x 12 rep.', nota: '' },
               { id: 'a_rosca_direta', nome: 'Rosca Direta (Polia ou Halter)', reps: '3 x 15 rep.', nota: '' },
               { id: 'a_abdominal_infra', nome: 'Abdominal Infra (Elevação de pernas)', reps: '3 x 20 rep.', nota: '' }
             ]
@@ -545,16 +720,16 @@
       },
       B: {
         titulo: 'Treino B: Inferiores (Quadríceps)',
-        foco: '',
+        foco: 'Quadríceps e panturrilhas.',
         blocos: [
           {
-            titulo: 'Série principal',
+            titulo: '1) Sequência principal',
             meta: '',
             exercicios: [
               { id: 'b_agachamento', nome: 'Agachamento Livre ou Smith', reps: '4 x 10 a 12 rep.', nota: '' },
-              { id: 'b_legpress', nome: 'Leg Press 45°', reps: '3 x 12 a 15 rep.', nota: '' },
-              { id: 'b_extensora', nome: 'Cadeira Extensora', reps: '3 x 12 rep.', nota: '(+10s de isometria no final da última série).' },
-              { id: 'b_afundo_estatico', nome: 'Afundo (Passada Estática)', reps: '3 x 12 rep.', nota: '(cada perna).' },
+              { id: 'b_leg_press', nome: 'Leg Press 45°', reps: '3 x 12 a 15 rep.', nota: '' },
+              { id: 'b_extensora', nome: 'Cadeira Extensora', reps: '3 x 12 rep.', nota: '+10s de isometria no final da última série.' },
+              { id: 'b_afundo', nome: 'Afundo (Passada Estática)', reps: '3 x 12 rep. (cada perna)', nota: '' },
               { id: 'b_panturrilha_sentada', nome: 'Panturrilha Sentada', reps: '4 x 15 a 20 rep.', nota: '' }
             ]
           }
@@ -562,13 +737,13 @@
       },
       C: {
         titulo: 'Treino C: Superiores (Peito e Tríceps)',
-        foco: '',
+        foco: 'Peito, tríceps e core.',
         blocos: [
           {
-            titulo: 'Série principal',
+            titulo: '1) Sequência principal',
             meta: '',
             exercicios: [
-              { id: 'c_supino_reto_halteres', nome: 'Supino Reto (Halteres)', reps: '3 x 12 rep.', nota: '' },
+              { id: 'c_supino_reto', nome: 'Supino Reto (Halteres)', reps: '3 x 12 rep.', nota: '' },
               { id: 'c_crucifixo_inclinado', nome: 'Crucifixo Inclinado', reps: '3 x 15 rep.', nota: '' },
               { id: 'c_triceps_corda', nome: 'Tríceps Corda (Polia)', reps: '3 x 15 rep.', nota: '' },
               { id: 'c_triceps_frances', nome: 'Tríceps Francês (Halter)', reps: '3 x 12 rep.', nota: '' },
@@ -580,17 +755,17 @@
       },
       D: {
         titulo: 'Treino D: Inferiores (Glúteo e Posterior)',
-        foco: '',
+        foco: 'Glúteos e posterior de coxa.',
         blocos: [
           {
-            titulo: 'Série principal',
+            titulo: '1) Sequência principal',
             meta: '',
             exercicios: [
               { id: 'd_elevacao_pelvica', nome: 'Elevação Pélvica', reps: '4 x 10 a 12 rep.', nota: '' },
               { id: 'd_stiff', nome: 'Stiff (Barra ou Halteres)', reps: '3 x 12 rep.', nota: '' },
-              { id: 'd_cadeira_flexora', nome: 'Cadeira Flexora', reps: '3 x 12 a 15 rep.', nota: '' },
-              { id: 'd_cadeira_abdutora', nome: 'Cadeira Abdutora', reps: '3 x 20 rep.', nota: '(tronco inclinado à frente).' },
-              { id: 'd_gluteo_cabo', nome: 'Glúteo no Cabo (Polia)', reps: '3 x 12 rep.', nota: '(cada perna).' }
+              { id: 'd_flexora', nome: 'Cadeira Flexora', reps: '3 x 12 a 15 rep.', nota: '' },
+              { id: 'd_abdutora', nome: 'Cadeira Abdutora', reps: '3 x 20 rep.', nota: 'Tronco inclinado à frente.' },
+              { id: 'd_gluteo_cabo', nome: 'Glúteo no Cabo (Polia)', reps: '3 x 12 rep. (cada perna)', nota: '' }
             ]
           }
         ]
@@ -598,23 +773,28 @@
     };
 
     const EXERCISE_LIBRARY = [
-      { id: 'a_agachamento', nome: 'Agachamento Livre ou Smith', musculos: 'Quadríceps, glúteos, core', descricao: 'Pés firmes e coluna neutra; desça até amplitude segura.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Barbell-barbell-squat-side.gif' },
-      { id: 'a_extensora', nome: 'Cadeira Extensora', musculos: 'Quadríceps', descricao: 'Suba controlando e segure 1s no topo da contração.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Machine-leg-extension-side.gif' },
-      { id: 'a_stiff', nome: 'Stiff (halteres ou barra)', musculos: 'Posterior de coxa, glúteos', descricao: 'Quadril para trás, joelhos semi-flexionados e lombar neutra.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Barbell-romanian-deadlift-side.gif' },
-      { id: 'a_flexora', nome: 'Mesa Flexora ou Flexora Vertical', musculos: 'Posterior de coxa', descricao: 'Evite tirar o quadril do banco e controle a volta.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Machine-leg-curl-side.gif' },
-      { id: 'a_legpress', nome: 'Leg Press 45°', musculos: 'Quadríceps, glúteos', descricao: 'Desça até manter lombar estável e empurre sem travar joelhos.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Machine-leg-press-side.gif' },
-      { id: 'b_barra_fixa', nome: 'Barra Fixa ou Graviton', musculos: 'Dorsal, bíceps', descricao: 'Puxe com cotovelos para baixo e evite impulso.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Bodyweight-pullup-side.gif' },
-      { id: 'b_dips', nome: 'Mergulho nas Paralelas (Dips)', musculos: 'Tríceps, peitoral inferior', descricao: 'Tronco levemente inclinado e descida sob controle.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Bodyweight-dips-side.gif' },
-      { id: 'b_remada', nome: 'Remada Curvada', musculos: 'Costas, posterior de ombro', descricao: 'Mantenha o tronco firme e puxe em direção ao abdômen.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Barbell-barbell-row-side.gif' },
-      { id: 'b_triceps_testa', nome: 'Tríceps Testa', musculos: 'Tríceps', descricao: 'Cotovelos fixos e controle da barra/halteres na descida.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Barbell-lying-tricep-extension-side.gif' },
-      { id: 'c_supino_inclinado', nome: 'Supino Inclinado (Halteres)', musculos: 'Peitoral superior, tríceps', descricao: 'Escápulas encaixadas e subida sem bater halteres.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Dumbbells-incline-bench-press-side.gif' },
-      { id: 'c_supino_reto', nome: 'Supino Reto (Barra ou Máquina)', musculos: 'Peitoral, tríceps, ombro anterior', descricao: 'Pés fixos no chão e barra tocando levemente o peito.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Barbell-bench-press-side.gif' },
-      { id: 'c_pec_deck', nome: 'Crucifixo Máquina (Pec Deck)', musculos: 'Peitoral', descricao: 'Aproxime os braços em arco e volte controlando.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Machine-pec-deck-fly-side.gif' },
-      { id: 'c_rosca_direta', nome: 'Rosca Direta (Barra W/Reta)', musculos: 'Bíceps', descricao: 'Cotovelos ao lado do tronco, sem balanço.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Barbell-barbell-curl-side.gif' },
-      { id: 'd_desenvolvimento', nome: 'Desenvolvimento Militar', musculos: 'Ombros, tríceps', descricao: 'Empurre acima da cabeça sem perder estabilidade do core.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Barbell-standing-military-press-side.gif' },
-      { id: 'd_elevacao_lateral', nome: 'Elevação Lateral', musculos: 'Deltoide lateral', descricao: 'Suba até a linha do ombro com cotovelos semi-flexionados.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Dumbbells-dumbbell-lateral-raise-side.gif' },
-      { id: 'd_encolhimento', nome: 'Encolhimento (halteres/barra)', musculos: 'Trapézio', descricao: 'Eleve os ombros para cima e desça controlando.', media: 'https://media.musclewiki.com/media/uploads/videos/branded/male-Dumbbells-dumbbell-shrug-side.gif' },
-      { id: 'b_prancha', nome: 'Prancha Isométrica', musculos: 'Core', descricao: 'Alinhe cabeça, tronco e quadril sem compensar lombar.', media: 'https://media.tenor.com/oqfD8WmKu14AAAAC/plank-fitness.gif' }
+      { id: 'a_puxada_alta', nome: 'Puxada Alta (Pulley)', musculos: 'Costas', descricao: '', media: '' },
+      { id: 'a_remada_baixa', nome: 'Remada Baixa (Triângulo)', musculos: 'Costas', descricao: '', media: '' },
+      { id: 'a_elevacao_lateral', nome: 'Elevação Lateral (Ombros)', musculos: 'Ombros', descricao: '', media: '' },
+      { id: 'a_desenvolvimento', nome: 'Desenvolvimento (Halteres)', musculos: 'Ombros', descricao: '', media: '' },
+      { id: 'a_rosca_direta', nome: 'Rosca Direta (Polia ou Halter)', musculos: 'Bíceps', descricao: '', media: '' },
+      { id: 'a_abdominal_infra', nome: 'Abdominal Infra (Elevação de pernas)', musculos: 'Core', descricao: '', media: '' },
+      { id: 'b_agachamento', nome: 'Agachamento Livre ou Smith', musculos: 'Quadríceps, glúteos', descricao: '', media: '' },
+      { id: 'b_leg_press', nome: 'Leg Press 45°', musculos: 'Quadríceps, glúteos', descricao: '', media: '' },
+      { id: 'b_extensora', nome: 'Cadeira Extensora', musculos: 'Quadríceps', descricao: '', media: '' },
+      { id: 'b_afundo', nome: 'Afundo (Passada Estática)', musculos: 'Quadríceps, glúteos', descricao: '', media: '' },
+      { id: 'b_panturrilha_sentada', nome: 'Panturrilha Sentada', musculos: 'Panturrilhas', descricao: '', media: '' },
+      { id: 'c_supino_reto', nome: 'Supino Reto (Halteres)', musculos: 'Peito, tríceps', descricao: '', media: '' },
+      { id: 'c_crucifixo_inclinado', nome: 'Crucifixo Inclinado', musculos: 'Peito', descricao: '', media: '' },
+      { id: 'c_triceps_corda', nome: 'Tríceps Corda (Polia)', musculos: 'Tríceps', descricao: '', media: '' },
+      { id: 'c_triceps_frances', nome: 'Tríceps Francês (Halter)', musculos: 'Tríceps', descricao: '', media: '' },
+      { id: 'c_abdominal_supra', nome: 'Abdominal Supra (Remador)', musculos: 'Core', descricao: '', media: '' },
+      { id: 'c_prancha', nome: 'Prancha Abdominal', musculos: 'Core', descricao: '', media: '' },
+      { id: 'd_elevacao_pelvica', nome: 'Elevação Pélvica', musculos: 'Glúteos', descricao: '', media: '' },
+      { id: 'd_stiff', nome: 'Stiff (Barra ou Halteres)', musculos: 'Posterior de coxa, glúteos', descricao: '', media: '' },
+      { id: 'd_flexora', nome: 'Cadeira Flexora', musculos: 'Posterior de coxa', descricao: '', media: '' },
+      { id: 'd_abdutora', nome: 'Cadeira Abdutora', musculos: 'Glúteos', descricao: '', media: '' },
+      { id: 'd_gluteo_cabo', nome: 'Glúteo no Cabo (Polia)', musculos: 'Glúteos', descricao: '', media: '' }
     ];
 
     const ACTIVE_REST_TIPS = [
@@ -666,12 +846,40 @@
     const currentYearBtn = document.getElementById('currentYearBtn');
     const nextYearBtn = document.getElementById('nextYearBtn');
     const offlineStatusEl = document.getElementById('offlineStatus');
+    const workoutProgressTextEl = document.getElementById('workoutProgressText');
+    const workoutProgressFillEl = document.getElementById('workoutProgressFill');
+    const nextWorkoutHintEl = document.getElementById('nextWorkoutHint');
+    const exportDataBtn = document.getElementById('exportDataBtn');
+    const importDataBtn = document.getElementById('importDataBtn');
+    const importFileInput = document.getElementById('importFileInput');
+    const backupStatusEl = document.getElementById('backupStatus');
+    const toggleSessionBtn = document.getElementById('toggleSessionBtn');
+    const sessionStatusEl = document.getElementById('sessionStatus');
+    const smartNudgeEl = document.getElementById('smartNudge');
+    const coachQuickTextEl = document.getElementById('coachQuickText');
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const shareWorkoutBtn = document.getElementById('shareWorkoutBtn');
+    const libraryFilterInput = document.getElementById('libraryFilterInput');
+    const toggleFavoritesOnlyBtn = document.getElementById('toggleFavoritesOnlyBtn');
+    const weekPlanGridEl = document.getElementById('weekPlanGrid');
+    const weekPlanHintEl = document.getElementById('weekPlanHint');
+    const themeColorMetaEl = document.getElementById('themeColorMeta');
 
     let cargas = loadCargas();
     let activeDay = loadActiveDay();
     let trainingHistory = loadTrainingHistory();
     let customExercisesByDay = loadCustomExercises();
     let seriesTrackByDate = loadSeriesTrack();
+    let workoutSetLog = loadWorkoutSetLog();
+    let isSessionActive = false;
+    let sessionExercises = [];
+    let sessionIndex = 0;
+    let favoriteExerciseIds = loadFavoriteExerciseIds();
+    let activeTheme = loadTheme();
+    let libraryFilterText = '';
+    let favoritesOnly = false;
+
+    const DAY_SEQUENCE = ['A', 'B', 'C', 'D'];
 
     const today = new Date();
     let calendarYear = today.getFullYear();
@@ -778,6 +986,100 @@
       localStorage.setItem(SERIES_TRACK_KEY, JSON.stringify(seriesTrackByDate));
     }
 
+    function loadWorkoutSetLog() {
+      try {
+        const raw = localStorage.getItem(WORKOUT_SET_LOG_KEY);
+        if (!raw) return {};
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return {};
+
+        const cleaned = {};
+        Object.entries(parsed).forEach(([dateKey, byExercise]) => {
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(dateKey) || !byExercise || typeof byExercise !== 'object') return;
+
+          const exerciseMap = {};
+          Object.entries(byExercise).forEach(([exerciseId, weights]) => {
+            if (!Array.isArray(weights)) return;
+            const normalized = weights
+              .map((weight) => Number(weight))
+              .filter((weight) => Number.isFinite(weight) && weight >= 0);
+            if (normalized.length) {
+              exerciseMap[exerciseId] = normalized;
+            }
+          });
+
+          if (Object.keys(exerciseMap).length) {
+            cleaned[dateKey] = exerciseMap;
+          }
+        });
+
+        return cleaned;
+      } catch {
+        return {};
+      }
+    }
+
+    function saveWorkoutSetLog() {
+      localStorage.setItem(WORKOUT_SET_LOG_KEY, JSON.stringify(workoutSetLog));
+    }
+
+    function loadFavoriteExerciseIds() {
+      try {
+        const raw = localStorage.getItem(FAVORITES_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed.filter((value) => typeof value === 'string');
+      } catch {
+        return [];
+      }
+    }
+
+    function saveFavoriteExerciseIds() {
+      localStorage.setItem(FAVORITES_KEY, JSON.stringify(favoriteExerciseIds));
+    }
+
+    function isFavoriteExercise(exerciseId) {
+      return favoriteExerciseIds.includes(exerciseId);
+    }
+
+    function toggleFavoriteExercise(exerciseId) {
+      if (isFavoriteExercise(exerciseId)) {
+        favoriteExerciseIds = favoriteExerciseIds.filter((id) => id !== exerciseId);
+      } else {
+        favoriteExerciseIds = [...favoriteExerciseIds, exerciseId];
+      }
+      saveFavoriteExerciseIds();
+      renderExerciseLibrary();
+    }
+
+    function loadTheme() {
+      const saved = localStorage.getItem(THEME_KEY);
+      if (saved === 'light' || saved === 'dark') return saved;
+      return 'dark';
+    }
+
+    function saveTheme() {
+      localStorage.setItem(THEME_KEY, activeTheme);
+    }
+
+    function applyTheme() {
+      document.body.setAttribute('data-theme', activeTheme);
+      themeToggleBtn.textContent = activeTheme === 'dark' ? 'Tema: Escuro' : 'Tema: Claro';
+      if (themeColorMetaEl) {
+        themeColorMetaEl.setAttribute('content', activeTheme === 'dark' ? '#0f172a' : '#f8fafc');
+      }
+    }
+
+    function loadLastInactivityAlertDate() {
+      const value = localStorage.getItem(INACTIVITY_ALERT_KEY);
+      return /^\d{4}-\d{2}-\d{2}$/.test(value || '') ? value : null;
+    }
+
+    function saveLastInactivityAlertDate(dateKey) {
+      localStorage.setItem(INACTIVITY_ALERT_KEY, dateKey);
+    }
+
     function toDateKey(date) {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -802,6 +1104,8 @@
       saveTrainingHistory();
       renderCalendar();
       renderRetrospective();
+      renderWorkoutStatus();
+      renderWeekPlan();
     }
 
     function toggleTraining(dateKey) {
@@ -813,6 +1117,398 @@
       saveTrainingHistory();
       renderCalendar();
       renderRetrospective();
+      renderWorkoutStatus();
+      renderWeekPlan();
+    }
+
+    function parseBlockSeriesTarget(title) {
+      const match = String(title || '').match(/(\d+)\s*(séries|series|voltas?)/i);
+      if (!match) return 3;
+      return Math.max(1, Number(match[1]) || 3);
+    }
+
+    function formatWeight(value) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) return '0';
+      return numeric.toLocaleString('pt-BR', {
+        minimumFractionDigits: Number.isInteger(numeric) ? 0 : 1,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function getProgressionIncrement(exerciseName) {
+      const normalized = String(exerciseName || '').toLowerCase();
+      if (/halter|dumbbell/.test(normalized)) return 2.5;
+      if (/barra|barbell|smith/.test(normalized)) return 5;
+      return 2.5;
+    }
+
+    function getNextDay(day) {
+      const index = DAY_SEQUENCE.indexOf(day);
+      if (index < 0) return 'A';
+      return DAY_SEQUENCE[(index + 1) % DAY_SEQUENCE.length];
+    }
+
+    function getLatestTrainingEntry() {
+      const entries = Object.entries(trainingHistory)
+        .filter(([, day]) => DAY_SEQUENCE.includes(day))
+        .sort(([a], [b]) => a.localeCompare(b));
+      if (!entries.length) return null;
+      return entries[entries.length - 1];
+    }
+
+    function getCoachQuickText() {
+      const focusText = PLANOS[activeDay]?.foco || 'Foco geral';
+      const firstExercise = getCombinedExercises(activeDay)?.[0]?.exercicios?.[0];
+      const details = firstExercise ? getExerciseDetails(firstExercise) : { descricao: '' };
+      const tip = details.descricao || 'Mantenha execução controlada e respiração ativa em todas as séries.';
+      return `Foco do dia: ${focusText} • Dica: ${tip}`;
+    }
+
+    function getNextWorkoutSuggestionText() {
+      const latest = getLatestTrainingEntry();
+      if (!latest) {
+        return 'Próximo treino sugerido: A';
+      }
+
+      const [dateKey, day] = latest;
+      const nextDay = getNextDay(day);
+      return `Próximo treino sugerido: ${nextDay} • Último: ${day} em ${formatDateKey(dateKey)}`;
+    }
+
+    function getWeekDayLabel(date) {
+      const labels = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+      return labels[date.getDay()];
+    }
+
+    function getWeekStartDate(baseDate) {
+      const date = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
+      const day = date.getDay();
+      const diffToMonday = day === 0 ? -6 : 1 - day;
+      date.setDate(date.getDate() + diffToMonday);
+      return date;
+    }
+
+    function getSuggestedDayForDate(date) {
+      const latest = getLatestTrainingEntry();
+      if (!latest) return 'A';
+
+      const [dateKey, day] = latest;
+      const lastDate = parseDateKey(dateKey);
+      const diffDays = Math.floor((new Date(date.getFullYear(), date.getMonth(), date.getDate()) - new Date(lastDate.getFullYear(), lastDate.getMonth(), lastDate.getDate())) / (1000 * 60 * 60 * 24));
+      if (diffDays <= 0) return day;
+
+      let current = day;
+      for (let i = 0; i < diffDays; i += 1) {
+        current = getNextDay(current);
+      }
+      return current;
+    }
+
+    function renderWeekPlan() {
+      weekPlanGridEl.innerHTML = '';
+
+      const start = getWeekStartDate(new Date());
+      const todayKey = toDateKey(new Date());
+      let todaySuggestion = 'A';
+
+      for (let offset = 0; offset < 7; offset += 1) {
+        const date = new Date(start);
+        date.setDate(start.getDate() + offset);
+        const dateKey = toDateKey(date);
+        const trainedDay = trainingHistory[dateKey];
+        const suggestedDay = getSuggestedDayForDate(date);
+        if (dateKey === todayKey) {
+          todaySuggestion = suggestedDay;
+        }
+
+        const row = document.createElement('div');
+        row.className = 'week-row';
+
+        const dayLabel = document.createElement('div');
+        dayLabel.className = 'week-day';
+        dayLabel.textContent = getWeekDayLabel(date);
+
+        const status = document.createElement('div');
+        status.textContent = trainedDay ? `${trainedDay} ✓` : suggestedDay;
+
+        const dateText = document.createElement('div');
+        dateText.className = 'muted';
+        dateText.textContent = formatDateKey(dateKey);
+
+        row.append(dayLabel, status, dateText);
+        weekPlanGridEl.appendChild(row);
+      }
+
+      weekPlanHintEl.textContent = `Hoje seria o treino ${todaySuggestion}.`;
+    }
+
+    function createWorkoutShareCanvasData() {
+      const progress = getDayProgress(activeDay);
+      const todayKey = toDateKey(new Date());
+      const daySetMap = workoutSetLog?.[todayKey] || {};
+      let volume = 0;
+
+      Object.values(daySetMap).forEach((weights) => {
+        if (!Array.isArray(weights)) return;
+        volume += weights
+          .map((weight) => Number(weight))
+          .filter((weight) => Number.isFinite(weight) && weight >= 0)
+          .reduce((sum, weight) => sum + weight, 0);
+      });
+
+      return {
+        title: `Treino ${activeDay} concluído`,
+        volume: `${formatWeight(volume)} kg`,
+        progress: `${progress.done}/${progress.total} séries`,
+        time: formatTime(totalSeconds)
+      };
+    }
+
+    function drawWorkoutShareImage() {
+      const data = createWorkoutShareCanvasData();
+      const canvas = document.createElement('canvas');
+      canvas.width = 1080;
+      canvas.height = 1080;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+
+      ctx.fillStyle = activeTheme === 'light' ? '#f8fafc' : '#0f172a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = activeTheme === 'light' ? '#0f172a' : '#f8fafc';
+      ctx.font = 'bold 72px system-ui';
+      ctx.fillText('Meu Treino', 90, 170);
+
+      ctx.font = 'bold 88px system-ui';
+      ctx.fillText(data.title, 90, 340);
+
+      ctx.font = '54px system-ui';
+      ctx.fillText(`Volume: ${data.volume}`, 90, 500);
+      ctx.fillText(`Progresso: ${data.progress}`, 90, 590);
+      ctx.fillText(`Tempo: ${data.time}`, 90, 680);
+
+      ctx.fillStyle = '#22c55e';
+      ctx.font = 'bold 56px system-ui';
+      ctx.fillText('💪', 90, 790);
+
+      return canvas;
+    }
+
+    async function shareWorkoutResult() {
+      const canvas = drawWorkoutShareImage();
+      if (!canvas) return;
+
+      const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) return;
+
+      const file = new File([blob], `treino-${toDateKey(new Date())}.png`, { type: 'image/png' });
+      if (navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: 'Meu Treino',
+          text: `Treino ${activeDay} concluído 💪`,
+          files: [file]
+        });
+        return;
+      }
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = file.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    function getDayProgress(day, dateKey = toDateKey(new Date())) {
+      const blocks = getCombinedExercises(day);
+      const daySeries = seriesTrackByDate[dateKey] || {};
+
+      let done = 0;
+      let total = 0;
+
+      blocks.forEach((block) => {
+        const target = parseBlockSeriesTarget(block.titulo);
+        block.exercicios.forEach((exercise) => {
+          const completed = Number(daySeries[exercise.id] || 0);
+          done += Math.min(completed, target);
+          total += target;
+        });
+      });
+
+      const percentage = total > 0 ? Math.round((done / total) * 100) : 0;
+      return { done, total, percentage };
+    }
+
+    function getExercisesWithTargets(day) {
+      const rows = [];
+      getCombinedExercises(day).forEach((block) => {
+        const targetSeries = parseBlockSeriesTarget(block.titulo);
+        block.exercicios.forEach((exercise) => {
+          rows.push({ exercise, targetSeries });
+        });
+      });
+      return rows;
+    }
+
+    function isExerciseDoneToday(exerciseId, targetSeries) {
+      return getSeriesCount(exerciseId) >= targetSeries;
+    }
+
+    function getCurrentSessionItem() {
+      if (!isSessionActive) return null;
+      return sessionExercises[sessionIndex] || null;
+    }
+
+    function recomputeSessionIndexToNextIncomplete() {
+      const nextIndex = sessionExercises.findIndex((item) => !isExerciseDoneToday(item.exercise.id, item.targetSeries));
+      sessionIndex = nextIndex >= 0 ? nextIndex : sessionExercises.length;
+    }
+
+    function updateSessionStatus() {
+      if (!isSessionActive) {
+        sessionStatusEl.textContent = 'Sessão: inativa';
+        return;
+      }
+
+      const current = getCurrentSessionItem();
+      if (!current) {
+        sessionStatusEl.textContent = 'Sessão ativa • treino concluído ✅';
+        return;
+      }
+
+      sessionStatusEl.textContent = `Sessão ativa • exercício ${sessionIndex + 1}/${sessionExercises.length}: ${current.exercise.nome}`;
+    }
+
+    function scrollToCurrentSessionExercise() {
+      const current = getCurrentSessionItem();
+      if (!current) return;
+
+      const targetEl = listEl.querySelector(`[data-exercise-id="${current.exercise.id}"]`);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    function startSession() {
+      isSessionActive = true;
+      sessionExercises = getExercisesWithTargets(activeDay);
+      recomputeSessionIndexToNextIncomplete();
+      toggleSessionBtn.textContent = 'Encerrar sessão';
+      renderExercises();
+      setTimeout(scrollToCurrentSessionExercise, 40);
+    }
+
+    function stopSession() {
+      isSessionActive = false;
+      sessionExercises = [];
+      sessionIndex = 0;
+      toggleSessionBtn.textContent = 'Iniciar treino';
+      renderExercises();
+    }
+
+    function startAutoRestTimer() {
+      remainingSeconds = totalSeconds;
+      stopTimer();
+      updateTimerDisplay();
+      startTimer();
+    }
+
+    function maybeAdvanceSessionAfterSet(exerciseId) {
+      if (!isSessionActive) return;
+      const current = getCurrentSessionItem();
+      if (!current || current.exercise.id !== exerciseId) return;
+      if (isExerciseDoneToday(current.exercise.id, current.targetSeries)) {
+        recomputeSessionIndexToNextIncomplete();
+      }
+    }
+
+    function maybeShowInactivityNudge() {
+      const todayKey = toDateKey(new Date());
+      const latest = getLatestTrainingEntry();
+
+      if (!latest) {
+        smartNudgeEl.textContent = 'Sem treino registrado ainda: comece hoje com o treino A.';
+        return;
+      }
+
+      const [dateKey, day] = latest;
+      const now = new Date();
+      const lastDate = parseDateKey(dateKey);
+      const diffDays = Math.floor((new Date(now.getFullYear(), now.getMonth(), now.getDate()) - new Date(lastDate.getFullYear(), lastDate.getMonth(), lastDate.getDate())) / (1000 * 60 * 60 * 24));
+
+      if (diffDays >= 2) {
+        const message = `Hora de voltar. Seu último treino foi ${day}.`;
+        smartNudgeEl.textContent = message;
+
+        const lastAlertDate = loadLastInactivityAlertDate();
+        if (lastAlertDate !== todayKey && 'Notification' in window && Notification.permission === 'granted') {
+          new Notification('Lembrete inteligente', { body: message, icon: './icon.svg', badge: './icon.svg' });
+          saveLastInactivityAlertDate(todayKey);
+        }
+      } else {
+        smartNudgeEl.textContent = 'Consistência em dia. Continue no ritmo 💪';
+      }
+    }
+
+    function recordSet(dateKey, exerciseId, weight) {
+      if (!workoutSetLog[dateKey]) {
+        workoutSetLog[dateKey] = {};
+      }
+      if (!Array.isArray(workoutSetLog[dateKey][exerciseId])) {
+        workoutSetLog[dateKey][exerciseId] = [];
+      }
+      workoutSetLog[dateKey][exerciseId].push(Number.isFinite(weight) ? weight : 0);
+    }
+
+    function getExercisePRData(exerciseId) {
+      const dates = Object.keys(workoutSetLog).sort();
+
+      let lastWeight = null;
+      let lastDate = null;
+      let maxWeight = 0;
+      let maxVolume = 0;
+
+      dates.forEach((dateKey) => {
+        const sets = workoutSetLog?.[dateKey]?.[exerciseId];
+        if (!Array.isArray(sets) || !sets.length) return;
+
+        const setNumbers = sets.map((weight) => Number(weight)).filter((weight) => Number.isFinite(weight));
+        if (!setNumbers.length) return;
+
+        const highestInDate = Math.max(...setNumbers);
+        const volumeInDate = setNumbers.reduce((sum, weight) => sum + weight, 0);
+
+        if (highestInDate > maxWeight) maxWeight = highestInDate;
+        if (volumeInDate > maxVolume) maxVolume = volumeInDate;
+
+        lastDate = dateKey;
+        lastWeight = setNumbers[setNumbers.length - 1];
+      });
+
+      return {
+        lastWeight,
+        lastDate,
+        maxWeight,
+        maxVolume
+      };
+    }
+
+    function formatDateKey(dateKey) {
+      if (!dateKey) return '—';
+      const [year, month, day] = dateKey.split('-');
+      return `${day}/${month}/${year}`;
+    }
+
+    function renderWorkoutStatus() {
+      const progress = getDayProgress(activeDay);
+      workoutProgressTextEl.textContent = `Progresso: ${progress.done} / ${progress.total} séries`;
+      workoutProgressFillEl.style.width = `${progress.percentage}%`;
+      nextWorkoutHintEl.textContent = getNextWorkoutSuggestionText();
+      coachQuickTextEl.textContent = getCoachQuickText();
+      updateSessionStatus();
+      maybeShowInactivityNudge();
     }
 
     function renderCalendar() {
@@ -925,11 +1621,25 @@
       const total = filteredEntries.length;
       const monthCounts = Array(12).fill(0);
       const dayCounts = { A: 0, B: 0, C: 0, D: 0 };
+      const retrospectiveIsCurrentYear = retrospectiveYear === new Date().getFullYear();
+
+      let volumeTotalSets = 0;
+      let tonnage = 0;
 
       filteredEntries.forEach(([dateKey, day]) => {
         const parsedDate = parseDateKey(dateKey);
         monthCounts[parsedDate.getMonth()] += 1;
         if (dayCounts[day] !== undefined) dayCounts[day] += 1;
+
+        const daySetMap = workoutSetLog?.[dateKey] || {};
+        Object.values(daySetMap).forEach((weights) => {
+          if (!Array.isArray(weights)) return;
+          const normalized = weights
+            .map((weight) => Number(weight))
+            .filter((weight) => Number.isFinite(weight) && weight >= 0);
+          volumeTotalSets += normalized.length;
+          tonnage += normalized.reduce((sum, weight) => sum + weight, 0);
+        });
       });
 
       const bestMonthCount = Math.max(...monthCounts);
@@ -939,6 +1649,12 @@
 
       const streaks = calculateStreaks(filteredEntries.map(([dateKey]) => dateKey));
       const favoriteDay = Object.entries(dayCounts).sort((a, b) => b[1] - a[1])[0];
+      const yearDays = retrospectiveIsCurrentYear
+        ? Math.max(1, Math.floor((new Date() - new Date(retrospectiveYear, 0, 1)) / (1000 * 60 * 60 * 24)) + 1)
+        : (new Date(retrospectiveYear, 1, 29).getMonth() === 1 ? 366 : 365);
+      const totalWeeks = Math.max(1, yearDays / 7);
+      const workoutsPerWeek = total / totalWeeks;
+      const consistency = (total / yearDays) * 100;
 
       retroSummaryEl.appendChild(createRetroItem('Treinos totais', String(total)));
       retroSummaryEl.appendChild(createRetroItem('Média mensal', (total / 12).toFixed(1)));
@@ -946,6 +1662,10 @@
       retroSummaryEl.appendChild(createRetroItem('Maior sequência', `${streaks.longest} dias`));
       retroSummaryEl.appendChild(createRetroItem('Sequência recente', `${streaks.latest} dias`));
       retroSummaryEl.appendChild(createRetroItem('Treino mais feito', `${favoriteDay[0]} (${favoriteDay[1]})`));
+      retroSummaryEl.appendChild(createRetroItem('Volume total (séries)', String(volumeTotalSets)));
+      retroSummaryEl.appendChild(createRetroItem('Tonelagem', `${formatWeight(tonnage)} kg`));
+      retroSummaryEl.appendChild(createRetroItem('Treinos/semana', workoutsPerWeek.toFixed(2)));
+      retroSummaryEl.appendChild(createRetroItem('Consistência', `${consistency.toFixed(1)}%`));
     }
 
     function getCombinedExercises(day) {
@@ -1026,15 +1746,49 @@
       return Number(seriesTrackByDate?.[todayKey]?.[exerciseId] || 0);
     }
 
-    function markSeries(exerciseId) {
+    function markSeries(exercise, targetSeries) {
       const todayKey = toDateKey(new Date());
       if (!seriesTrackByDate[todayKey]) {
         seriesTrackByDate[todayKey] = {};
       }
+
+      const exerciseId = exercise.id;
       const current = Number(seriesTrackByDate[todayKey][exerciseId] || 0);
-      seriesTrackByDate[todayKey][exerciseId] = current + 1;
+      const nextValue = current + 1;
+      seriesTrackByDate[todayKey][exerciseId] = nextValue;
+
+      const currentWeight = Number(cargas[exerciseId] || 0);
+      recordSet(todayKey, exerciseId, currentWeight);
+
       saveSeriesTrack();
+      saveWorkoutSetLog();
+
+      if (nextValue === targetSeries && currentWeight > 0) {
+        const increment = getProgressionIncrement(exercise.nome);
+        const suggested = Number((currentWeight + increment).toFixed(2));
+        const accepted = confirm(`Concluiu todas as séries de ${exercise.nome}. Próximo treino: +${formatWeight(increment)} kg?`);
+
+        if (accepted) {
+          cargas[exerciseId] = suggested;
+          saveCargas();
+        }
+      }
+
+      maybeAdvanceSessionAfterSet(exerciseId);
+
+      if (isSessionActive) {
+        startAutoRestTimer();
+      }
+
+      if ('vibrate' in navigator) {
+        navigator.vibrate(80);
+      }
+
       renderExercises();
+
+      if (isSessionActive) {
+        setTimeout(scrollToCurrentSessionExercise, 40);
+      }
     }
 
     function buildCustomExerciseFromInput() {
@@ -1066,7 +1820,15 @@
     function renderExerciseLibrary() {
       exerciseLibraryEl.innerHTML = '';
 
-      EXERCISE_LIBRARY.forEach((exercise) => {
+      const normalizedFilter = libraryFilterText.trim().toLowerCase();
+      const filtered = EXERCISE_LIBRARY.filter((exercise) => {
+        const inFavorites = !favoritesOnly || isFavoriteExercise(exercise.id);
+        const searchText = `${exercise.nome} ${exercise.musculos}`.toLowerCase();
+        const inSearch = !normalizedFilter || searchText.includes(normalizedFilter);
+        return inFavorites && inSearch;
+      });
+
+      filtered.forEach((exercise) => {
         const card = document.createElement('div');
         card.className = 'block';
 
@@ -1104,10 +1866,26 @@
           });
         });
 
-        actions.appendChild(addButton);
+        const favButton = document.createElement('button');
+        favButton.type = 'button';
+        favButton.className = 'btn-favorite';
+        favButton.textContent = isFavoriteExercise(exercise.id) ? '★' : '☆';
+        favButton.setAttribute('aria-label', `Favoritar ${exercise.nome}`);
+        favButton.addEventListener('click', () => toggleFavoriteExercise(exercise.id));
+
+        actions.append(addButton, favButton);
         card.append(name, muscles, description, actions);
         exerciseLibraryEl.appendChild(card);
       });
+
+      if (!filtered.length) {
+        const empty = document.createElement('div');
+        empty.className = 'muted';
+        empty.textContent = 'Nenhum exercício encontrado para esse filtro.';
+        exerciseLibraryEl.appendChild(empty);
+      }
+
+      toggleFavoritesOnlyBtn.textContent = favoritesOnly ? 'Ver todos' : 'Ver só favoritos';
     }
 
     function setActiveRestTip(randomize = true) {
@@ -1164,9 +1942,17 @@
         blocoEl.appendChild(metaEl);
 
         bloco.exercicios.forEach((exercise) => {
+          const targetSeries = parseBlockSeriesTarget(bloco.titulo);
+          const prData = getExercisePRData(exercise.id);
           const details = getExerciseDetails(exercise);
           const row = document.createElement('div');
           row.className = 'row';
+          row.dataset.exerciseId = exercise.id;
+
+          const currentSessionItem = getCurrentSessionItem();
+          if (isSessionActive && currentSessionItem && currentSessionItem.exercise.id === exercise.id) {
+            row.classList.add('exercise-current');
+          }
 
           const left = document.createElement('div');
           const name = document.createElement('div');
@@ -1181,6 +1967,14 @@
           const descriptionText = details.descricao || exercise.nota;
           meta.textContent = `${exercise.reps}${descriptionText ? ` • ${descriptionText}` : ''}`;
 
+          const prMeta = document.createElement('div');
+          prMeta.className = 'exercise-meta pr-meta';
+          const lastWeightText = prData.lastWeight !== null ? `${formatWeight(prData.lastWeight)} kg` : '—';
+          const maxWeightText = prData.maxWeight > 0 ? `${formatWeight(prData.maxWeight)} kg 🔥` : '—';
+          const maxVolumeText = prData.maxVolume > 0 ? `${formatWeight(prData.maxVolume)} kg` : '—';
+          const lastDateText = prData.lastDate ? formatDateKey(prData.lastDate) : '—';
+          prMeta.textContent = `Último: ${lastWeightText} • Recorde: ${maxWeightText} • Volume PR: ${maxVolumeText} • Última vez: ${lastDateText}`;
+
           const muscles = document.createElement('div');
           muscles.className = 'inline-chip';
           muscles.textContent = details.musculos || 'Músculos gerais';
@@ -1190,18 +1984,18 @@
 
           const seriesBadge = document.createElement('span');
           seriesBadge.className = 'muted';
-          seriesBadge.textContent = `Séries hoje: ${getSeriesCount(exercise.id)}`;
+          seriesBadge.textContent = `Séries hoje: ${getSeriesCount(exercise.id)} / ${targetSeries}`;
 
           const seriesButton = document.createElement('button');
           seriesButton.type = 'button';
           seriesButton.className = 'btn-series';
           seriesButton.textContent = '+ Marcar série';
           seriesButton.setAttribute('aria-label', `Marcar uma série em ${exercise.nome}`);
-          seriesButton.addEventListener('click', () => markSeries(exercise.id));
+          seriesButton.addEventListener('click', () => markSeries(exercise, targetSeries));
 
           seriesRow.append(seriesButton, seriesBadge);
 
-          left.append(name, muscles, meta, seriesRow);
+          left.append(name, muscles, meta, prMeta, seriesRow);
 
           const right = document.createElement('div');
           right.className = 'exercise-weight';
@@ -1220,17 +2014,124 @@
             saveCargas();
           });
 
+          const plusLoadButton = document.createElement('button');
+          plusLoadButton.type = 'button';
+          plusLoadButton.className = 'btn-secondary';
+          plusLoadButton.textContent = '+2,5';
+          plusLoadButton.setAttribute('aria-label', `Adicionar 2,5kg em ${exercise.nome}`);
+          plusLoadButton.addEventListener('click', () => {
+            const currentWeight = Number(cargas[exercise.id] || 0);
+            const nextWeight = Number((currentWeight + 2.5).toFixed(2));
+            cargas[exercise.id] = nextWeight;
+            saveCargas();
+            renderExercises();
+          });
+
           const kg = document.createElement('span');
           kg.textContent = 'kg';
           kg.className = 'muted';
 
-          right.append(weightInput, kg);
+          right.append(weightInput, plusLoadButton, kg);
           row.append(left, right);
           blocoEl.appendChild(row);
         });
 
         listEl.appendChild(blocoEl);
       });
+
+      renderWorkoutStatus();
+      renderWeekPlan();
+    }
+
+    function exportBackupData() {
+      const payload = {
+        version: 1,
+        generatedAt: new Date().toISOString(),
+        data: {
+          cargas,
+          activeDay,
+          trainingHistory,
+          customExercisesByDay,
+          seriesTrackByDate,
+          workoutSetLog,
+          favoriteExerciseIds,
+          activeTheme
+        }
+      };
+
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const dateLabel = toDateKey(new Date());
+      link.href = url;
+      link.download = `meu-treino-backup-${dateLabel}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      backupStatusEl.textContent = 'Backup exportado com sucesso.';
+    }
+
+    async function importBackupData(file) {
+      if (!file) return;
+
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      const data = parsed?.data || parsed;
+
+      if (!data || typeof data !== 'object') {
+        throw new Error('Arquivo inválido');
+      }
+
+      if (data.cargas && typeof data.cargas === 'object') {
+        cargas = data.cargas;
+        saveCargas();
+      }
+
+      if (data.activeDay && PLANOS[data.activeDay]) {
+        activeDay = data.activeDay;
+        saveActiveDay();
+      }
+
+      if (data.trainingHistory && typeof data.trainingHistory === 'object') {
+        trainingHistory = data.trainingHistory;
+        saveTrainingHistory();
+      }
+
+      if (data.customExercisesByDay && typeof data.customExercisesByDay === 'object') {
+        customExercisesByDay = data.customExercisesByDay;
+        saveCustomExercises();
+      }
+
+      if (data.seriesTrackByDate && typeof data.seriesTrackByDate === 'object') {
+        seriesTrackByDate = data.seriesTrackByDate;
+        saveSeriesTrack();
+      }
+
+      if (data.workoutSetLog && typeof data.workoutSetLog === 'object') {
+        workoutSetLog = data.workoutSetLog;
+        saveWorkoutSetLog();
+      }
+
+      if (Array.isArray(data.favoriteExerciseIds)) {
+        favoriteExerciseIds = data.favoriteExerciseIds.filter((value) => typeof value === 'string');
+        saveFavoriteExerciseIds();
+      }
+
+      if (data.activeTheme === 'dark' || data.activeTheme === 'light') {
+        activeTheme = data.activeTheme;
+        saveTheme();
+        applyTheme();
+      }
+
+      renderExercises();
+      renderExerciseLibrary();
+      renderCalendar();
+      renderRetrospective();
+      renderWeekPlan();
+
+      backupStatusEl.textContent = 'Backup importado com sucesso.';
     }
 
     function resetCurrentDayLoads() {
@@ -1255,8 +2156,27 @@
       if (!button) return;
       activeDay = button.dataset.day;
       saveActiveDay();
+
+      if (isSessionActive) {
+        sessionExercises = getExercisesWithTargets(activeDay);
+        recomputeSessionIndexToNextIncomplete();
+      }
+
       renderExercises();
       renderExerciseLibrary();
+      renderWeekPlan();
+
+      if (isSessionActive) {
+        setTimeout(scrollToCurrentSessionExercise, 40);
+      }
+    });
+
+    toggleSessionBtn.addEventListener('click', () => {
+      if (isSessionActive) {
+        stopSession();
+      } else {
+        startSession();
+      }
     });
 
     resetDayBtn.addEventListener('click', () => {
@@ -1283,6 +2203,30 @@
       customExerciseMusclesEl.value = '';
       customExerciseDescEl.value = '';
       customExerciseMediaEl.value = '';
+    });
+
+    themeToggleBtn.addEventListener('click', () => {
+      activeTheme = activeTheme === 'dark' ? 'light' : 'dark';
+      saveTheme();
+      applyTheme();
+    });
+
+    shareWorkoutBtn.addEventListener('click', async () => {
+      try {
+        await shareWorkoutResult();
+      } catch {
+        notifySmart('Compartilhar resultado', 'Não foi possível compartilhar agora.');
+      }
+    });
+
+    libraryFilterInput.addEventListener('input', () => {
+      libraryFilterText = libraryFilterInput.value || '';
+      renderExerciseLibrary();
+    });
+
+    toggleFavoritesOnlyBtn.addEventListener('click', () => {
+      favoritesOnly = !favoritesOnly;
+      renderExerciseLibrary();
     });
 
     function formatTime(seconds) {
@@ -1361,7 +2305,7 @@
     notifyPermissionBtn.addEventListener('click', async () => {
       const permission = await requestNotificationPermission();
       if (permission === 'granted') {
-        notifyPermissionBtn.textContent = 'Notificações ativadas';
+        notifyPermissionBtn.textContent = 'Notificações ativas ✅';
         notifySmart('Notificações ativas', 'Você receberá alertas do timer e lembretes.');
       } else if (permission === 'denied') {
         notifyPermissionBtn.textContent = 'Notificações bloqueadas';
@@ -1381,7 +2325,30 @@
         notifySmart('Lembrete de treino', 'Hora de treinar. Se já treinou, ótimo trabalho 💪');
       }, 60 * 60 * 1000);
 
-      scheduleReminderBtn.textContent = 'Lembrete agendado';
+      scheduleReminderBtn.textContent = 'Lembrete agendado ✅';
+    });
+
+    exportDataBtn.addEventListener('click', () => {
+      try {
+        exportBackupData();
+      } catch {
+        backupStatusEl.textContent = 'Erro ao exportar backup.';
+      }
+    });
+
+    importDataBtn.addEventListener('click', () => {
+      importFileInput.value = '';
+      importFileInput.click();
+    });
+
+    importFileInput.addEventListener('change', async () => {
+      const [file] = importFileInput.files || [];
+      if (!file) return;
+      try {
+        await importBackupData(file);
+      } catch {
+        backupStatusEl.textContent = 'Arquivo inválido ou corrompido.';
+      }
     });
 
     calendarGridEl.addEventListener('click', (event) => {
@@ -1417,6 +2384,7 @@
 
     markTodayBtn.addEventListener('click', () => {
       markTraining(toDateKey(new Date()), activeDay);
+      renderWeekPlan();
     });
 
     prevYearBtn.addEventListener('click', () => {
@@ -1434,8 +2402,10 @@
       renderRetrospective();
     });
 
+    applyTheme();
     renderExercises();
     renderExerciseLibrary();
+    renderWeekPlan();
     setActiveRestTip(false);
     updateTimerDisplay();
     renderCalendar();

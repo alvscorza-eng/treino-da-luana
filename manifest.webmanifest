@@ -1,6 +1,6 @@
 {
-  "name": "Treino da Luana",
-  "short_name": "Luana",
+  "name": "Meu Treino",
+  "short_name": "Treino",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
