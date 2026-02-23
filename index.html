@@ -79,6 +79,28 @@
     h1 { font-size: 1.5rem; }
     h2 { font-size: 1.1rem; color: var(--muted); }
 
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .title-row h1 {
+      margin: 0;
+    }
+
+    .title-image {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      object-fit: cover;
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+
     .row {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -551,7 +573,10 @@
 <body>
   <div class="container">
     <div class="card">
-      <h1>Meu Treino</h1>
+      <div class="title-row">
+        <h1>Meu Treino</h1>
+        <img class="title-image" src="luana.jpeg" alt="Mulher de academia" />
+      </div>
       <span class="pill">Salvo no celular automaticamente</span>
       <span id="offlineStatus" class="pill">Offline: verificando...</span>
       <div class="top-actions">
@@ -620,16 +645,6 @@
     </div>
 
     <div class="card">
-      <h2>Banco de exercícios</h2>
-      <p class="muted">Toque no nome do exercício para abrir no Google Imagens e ver referências de execução.</p>
-      <div class="library-toolbar">
-        <input id="libraryFilterInput" type="text" placeholder="Filtrar exercício ou músculo" aria-label="Filtrar biblioteca" />
-        <button id="toggleFavoritesOnlyBtn" class="btn-secondary" type="button">Ver só favoritos</button>
-      </div>
-      <div id="exerciseLibrary" class="library-grid"></div>
-    </div>
-
-    <div class="card">
       <h2>Planejamento semanal</h2>
       <div id="weekPlanGrid" class="week-grid"></div>
       <p id="weekPlanHint" class="muted">Sugestão semanal baseada no último treino registrado.</p>
@@ -677,15 +692,6 @@
       <div id="retroSummary" class="retro-grid"></div>
     </div>
 
-    <div class="card">
-      <h2>Backup e restauração</h2>
-      <div class="backup-actions">
-        <button id="exportDataBtn" class="btn-secondary">Exportar JSON</button>
-        <button id="importDataBtn" class="btn-secondary">Importar JSON</button>
-        <input id="importFileInput" type="file" accept="application/json,.json" class="sr-only" aria-label="Selecionar arquivo de backup JSON" />
-      </div>
-      <p id="backupStatus" class="muted">Exporte para salvar uma cópia e importe quando precisar restaurar.</p>
-    </div>
   </div>
 
   <script>
@@ -1818,6 +1824,8 @@
     }
 
     function renderExerciseLibrary() {
+      if (!exerciseLibraryEl) return;
+
       exerciseLibraryEl.innerHTML = '';
 
       const normalizedFilter = libraryFilterText.trim().toLowerCase();
@@ -1885,7 +1893,9 @@
         exerciseLibraryEl.appendChild(empty);
       }
 
-      toggleFavoritesOnlyBtn.textContent = favoritesOnly ? 'Ver todos' : 'Ver só favoritos';
+      if (toggleFavoritesOnlyBtn) {
+        toggleFavoritesOnlyBtn.textContent = favoritesOnly ? 'Ver todos' : 'Ver só favoritos';
+      }
     }
 
     function setActiveRestTip(randomize = true) {
@@ -2070,7 +2080,9 @@
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      backupStatusEl.textContent = 'Backup exportado com sucesso.';
+      if (backupStatusEl) {
+        backupStatusEl.textContent = 'Backup exportado com sucesso.';
+      }
     }
 
     async function importBackupData(file) {
@@ -2131,7 +2143,9 @@
       renderRetrospective();
       renderWeekPlan();
 
-      backupStatusEl.textContent = 'Backup importado com sucesso.';
+      if (backupStatusEl) {
+        backupStatusEl.textContent = 'Backup importado com sucesso.';
+      }
     }
 
     function resetCurrentDayLoads() {
@@ -2219,15 +2233,19 @@
       }
     });
 
-    libraryFilterInput.addEventListener('input', () => {
-      libraryFilterText = libraryFilterInput.value || '';
-      renderExerciseLibrary();
-    });
+    if (libraryFilterInput) {
+      libraryFilterInput.addEventListener('input', () => {
+        libraryFilterText = libraryFilterInput.value || '';
+        renderExerciseLibrary();
+      });
+    }
 
-    toggleFavoritesOnlyBtn.addEventListener('click', () => {
-      favoritesOnly = !favoritesOnly;
-      renderExerciseLibrary();
-    });
+    if (toggleFavoritesOnlyBtn) {
+      toggleFavoritesOnlyBtn.addEventListener('click', () => {
+        favoritesOnly = !favoritesOnly;
+        renderExerciseLibrary();
+      });
+    }
 
     function formatTime(seconds) {
       const min = Math.floor(seconds / 60).toString().padStart(2, '0');
@@ -2328,28 +2346,36 @@
       scheduleReminderBtn.textContent = 'Lembrete agendado ✅';
     });
 
-    exportDataBtn.addEventListener('click', () => {
-      try {
-        exportBackupData();
-      } catch {
-        backupStatusEl.textContent = 'Erro ao exportar backup.';
-      }
-    });
+    if (exportDataBtn) {
+      exportDataBtn.addEventListener('click', () => {
+        try {
+          exportBackupData();
+        } catch {
+          if (backupStatusEl) {
+            backupStatusEl.textContent = 'Erro ao exportar backup.';
+          }
+        }
+      });
+    }
 
-    importDataBtn.addEventListener('click', () => {
-      importFileInput.value = '';
-      importFileInput.click();
-    });
+    if (importDataBtn && importFileInput) {
+      importDataBtn.addEventListener('click', () => {
+        importFileInput.value = '';
+        importFileInput.click();
+      });
 
-    importFileInput.addEventListener('change', async () => {
-      const [file] = importFileInput.files || [];
-      if (!file) return;
-      try {
-        await importBackupData(file);
-      } catch {
-        backupStatusEl.textContent = 'Arquivo inválido ou corrompido.';
-      }
-    });
+      importFileInput.addEventListener('change', async () => {
+        const [file] = importFileInput.files || [];
+        if (!file) return;
+        try {
+          await importBackupData(file);
+        } catch {
+          if (backupStatusEl) {
+            backupStatusEl.textContent = 'Arquivo inválido ou corrompido.';
+          }
+        }
+      });
+    }
 
     calendarGridEl.addEventListener('click', (event) => {
       const button = event.target.closest('button[data-date]');
